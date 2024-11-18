@@ -19,12 +19,10 @@ for y in range(64):
 
 tiles[10][10] = 1
 
-p1 = Player.player(32, 32, 0, 0, 0.8, 0.8, 0.1, 0.99)
+p1 = Player.player(32, 32, 0, 0, 0.8, 0.8, 0.1, 0.99)  # xpos, ypos, xvel, yvel, xsize, xsize, speed, dampening
 while run:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
 
-    dir = pygame.Vector2()
+    dir = pygame.Vector2()  # dir is a vector2 of each direction being pressed, to pass a single value to player
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -47,11 +45,12 @@ while run:
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 dir.x -= 1
 
-    p1.update(dir, tiles, pygame.Vector2())
+    p1.update(dir, tiles, pygame.Vector2())  # update player. takes directional input, 64x64 grid, and gravity(broken)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
 
+    # draw a rect for every solid cell
     for y in range(64):
         for x in range(64):
             if tiles[x][y] == 1:

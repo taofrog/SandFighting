@@ -12,14 +12,18 @@ class player:
         self.colliding = False
 
     def tilecollisions(self, grid):
-        overlap = pygame.Vector2()
+        overlap = pygame.Vector2()  # initialising empty variable
 
-        gridpos = [math.floor(self.pos.x), math.floor(self.pos.y)]
+        gridpos = [math.floor(self.pos.x), math.floor(self.pos.y)]  # what cell the player is currently in. int for ease
+
+        # check if center is inside a block i think it will squish here. need to look out for bugs
         if grid[gridpos[0]][gridpos[1]] == 1:
             self.colliding = True
+            return
         else:
             self.colliding = False
 
+        # check if each surrounding cell is solid, and check if there is any overlap with that cell.
         if grid[gridpos[0] + 1][gridpos[1]] == 1:  # left
             if self.pos.x + self.size.x / 2 >= gridpos[0] + 1:
                 self.colliding = True
@@ -80,7 +84,10 @@ class player:
                 else:
                     overlap.x = overlapx
 
+        # send position to outside cells
         self.pos -= overlap
+
+        # set velocity of the colliding axis to 0 if there is significant overlap
         if abs(overlap.x) > self.size.x / 50:
             self.vel.x = 0
         if abs(overlap.y) > self.size.x / 50:
@@ -92,21 +99,23 @@ class player:
 
         self.vel += self.speed * self.move / 60
         self.vel *= self.damp
-        self.vel += gravity
+        self.vel += gravity  # idk where to put this it maybe should go above dampening. shouldnt change much though
 
-        self.pos += self.vel
+        self.pos += self.vel  # move by vel each frame
 
         # COLLISIONS
-        self.tilecollisions(grid)
-
+        self.tilecollisions(grid)  # check for collisions with the grid.
+        # any other collisions, eg projectiles, should go here
 
     def draw(self, screen):
         p = pygame.Rect(
             self.pos.x * 16 - self.size.x * 8, self.pos.y * 16 - self.size.y * 8,
             self.size.x * 16, self.size.y * 16
-        )
+        )  # translating from world to screen space
+
         if self.colliding:
             colour = "red"
         else:
             colour = "blue"
+
         pygame.draw.rect(screen, colour, p)
