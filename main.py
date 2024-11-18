@@ -14,12 +14,18 @@ for y in range(64):
             if (x + y % 2) % 2:
                 print(x)
                 tiles[x][y] = 1
-            else:
-                tiles[x][y] = 0
+        if y == 0 or x == 0:
+            tiles[x][y] = 1
+        if y == 63 or x == 63:
+            tiles[x][y] = 1
+        if y == 30 and x > 27 and x < 37:
+            tiles[x][y] = 1
 
 tiles[10][10] = 1
 
-p1 = Player.player(32, 32, 0, 0, 0.8, 0.8, 0.1, 0.99)  # xpos, ypos, xvel, yvel, xsize, xsize, speed, dampening
+p1 = Player.player(32, 32, 0, 0, 0.8, 0.8, 2, 0.8, 2000)
+# xpos, ypos, xvel, yvel, xsize, xsize, speed, dampening, jump
+
 while run:
 
     dir = pygame.Vector2()  # dir is a vector2 of each direction being pressed, to pass a single value to player
@@ -45,7 +51,8 @@ while run:
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 dir.x -= 1
 
-    p1.update(dir, tiles, pygame.Vector2())  # update player. takes directional input, 64x64 grid, and gravity(broken)
+    p1.update(dir, tiles, pygame.Vector2(0.0, 0.01))
+    # update player. takes directional input, 64x64 grid, and gravity(broken)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
