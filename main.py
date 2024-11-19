@@ -23,10 +23,14 @@ for y in range(64):
 
 tiles[10][10] = 1
 
-p1 = Player.player(32, 10, 0, 0, 5, 5, 2, 0.8, 20)
+gravity = pygame.Vector2(0.0, 0.6)
+
+p1 = Player.player(32, 10, 0, 0, 2, 2, 0.1, 0.99, 50)
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, dampening, jump
 
 while run:
+    dt = clock.tick(60)
+    dt *= 0.001
 
     dir = pygame.Vector2()  # dir is a vector2 of each direction being pressed, to pass a single value to player
     for event in pygame.event.get():
@@ -52,11 +56,13 @@ while run:
                 dir.x -= 1
 
 
-    # update player. takes directional input, 64x64 grid, and gravity(broken)
+    # update player. takes directional input, 64x64 grid, and gravity
+    substeps = 8
+    for _ in range(substeps):
+        p1.update(dir, tiles, gravity, dt / substeps)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
-    p1.update(dir, tiles, pygame.Vector2(0.0, 0.01))
     # draw a rect for every solid cell
     for y in range(64):
         for x in range(64):
@@ -68,7 +74,5 @@ while run:
 
     # flip() the display to put your work on screen
     pygame.display.flip()
-
-    clock.tick(60)  # limits FPS to 60
 
 pygame.quit()

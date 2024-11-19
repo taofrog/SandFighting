@@ -12,6 +12,7 @@ class player:
         self.jump = _jump
         self.colliding = False
         self.grounded = False
+        self.jtime = 0.1
         if _airspeed < 0:
             self.airspeed = self.speed/10
         else:
@@ -112,7 +113,7 @@ class player:
         if abs(overlap.y) > self.size.x / 50:
             self.vel.y = 0
 
-    def update(self, movement, grid, gravity):
+    def update(self, movement, grid, gravity, dt):
         # MOVEMENT
         # make jump height consistant for dif damp and speed factors since its done weirdly
         # doesnt quite work, changing speed slightly changes jump height. damp doesnt tho
@@ -136,18 +137,19 @@ class player:
         gravspacemove = self.move.rotate_rad(gravangle)
 
         if self.grounded:
-            gravspacevel.x += self.speed * gravspacemove.x / 60
+            gravspacevel.x += self.speed * gravspacemove.x
             gravspacevel.x *= self.damp
-            gravspacevel.y += self.jump * gravspacemove.y / 60
+            if gravspacemove.y < 0:
+                gravspacevel.y -= self.jump
         else:
-            gravspacevel.x += self.airspeed * gravspacemove.x / 60
+            gravspacevel.x += self.airspeed * gravspacemove.x
             gravspacevel.x *= self.airdamp
 
         self.vel = gravspacevel.rotate_rad(-gravangle)
 
         self.vel += gravity  # idk where to put this. shouldnt change much though
 
-        self.pos += self.vel  # move by vel each frame
+        self.pos += self.vel * dt  # move by vel each frame
 
         # COLLISIONS
         self.tilecollisions(grid, gravity)  # check for collisions with the grid.
