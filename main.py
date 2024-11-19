@@ -1,31 +1,34 @@
 import pygame
 import math
 import Player
+from sandManager import *
 
 pygame.init()
 screen = pygame.display.set_mode((1024, 1024))
 clock = pygame.time.Clock()
 run = True
 
-tiles = [[0 for y in range(64)] for y in range(64)]
-for y in range(64):
-    for x in range(64):
-        if y * 64 + x > 2100:
-            if (x + y % 2) % 2:
-                print(x)
-                tiles[x][y] = 1
-        if y == 0 or x == 0:
-            tiles[x][y] = 1
-        if y == 63 or x == 63:
-            tiles[x][y] = 1
-        if y == 30 and x > 27 and x < 37:
-            tiles[x][y] = 1
 
-tiles[10][10] = 1
 
 gravity = pygame.Vector2(0.0, 0.6)
 
-p1 = Player.player(32, 10, 0, 0, 2, 2, 0.1, 0.99, 50)
+p1 = Player.player(32, 10, 0, 0, 2, 2, 0.2, 0.95, 50)
+
+air = tile(0, [0, 0, 0, 0])
+air.gravity = False
+air.sandPhysics = False
+sand = tile(1, [255, 0, 0, 255])
+
+tileTypes = {
+    0 : air,
+    1 : sand
+}
+
+manager = tileManager((64, 64), tileTypes)
+for y in range(31, 64):
+    for x in range(0, 64):
+        manager.tiles[x][y] = 1
+
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, dampening, jump
 
 while run:
@@ -54,23 +57,34 @@ while run:
                 dir.x += 1
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 dir.x -= 1
+    if pygame.mouse.get_pressed(3)[0]:
+        gridPos = pygame.mouse.get_pos()
+        gridPos = [int(gridPos[0] / manager.scale), int(gridPos[1] / manager.scale)]
+        manager.tiles[gridPos[0]][gridPos[1]] = 1
+
+
+
+    manager.update()
 
 
     # update player. takes directional input, 64x64 grid, and gravity
     substeps = 8
     for _ in range(substeps):
-        p1.update(dir, tiles, gravity, dt / substeps)
+        p1.update(dir, manager.tiles, gravity, dt / substeps)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
     # draw a rect for every solid cell
-    for y in range(64):
-        for x in range(64):
-            if tiles[x][y] == 1:
-                r = pygame.Rect(x * 16, y * 16, 16, 16)
-                pygame.draw.rect(screen, "black", r)
+
+
+
+
+
+    screen.blit(manager.displaySurf, [0, 0])
+    manager.updateSurf(0, 0)
 
     p1.draw(screen)
+
 
     # flip() the display to put your work on screen
     pygame.display.flip()
