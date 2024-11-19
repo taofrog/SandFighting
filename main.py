@@ -23,7 +23,7 @@ for y in range(64):
 
 tiles[10][10] = 1
 
-p1 = Player.player(32, 32, 0, 0, 0.8, 0.8, 2, 0.8, 2000)
+p1 = Player.player(32, 10, 0, 0, 5, 5, 2, 0.8, 20)
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, dampening, jump
 
 while run:
@@ -51,12 +51,12 @@ while run:
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 dir.x -= 1
 
-    p1.update(dir, tiles, pygame.Vector2(0.0, 0.01))
+
     # update player. takes directional input, 64x64 grid, and gravity(broken)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
-
+    p1.update(dir, tiles, pygame.Vector2(0.0, 0.01))
     # draw a rect for every solid cell
     for y in range(64):
         for x in range(64):
