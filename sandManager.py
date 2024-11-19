@@ -1,5 +1,5 @@
 import pygame
-import math
+import random
 from typing import Dict
 
 class tile:
@@ -26,8 +26,11 @@ class tileManager:
         self.displaySurf = pygame.surface.Surface([dimensions[0] * self.scale, dimensions[0] * self.scale])
 
     def update(self):
-        for x in range(self.dimensions[0]):
-            for y in range(self.dimensions[1]):
+        for y in range(self.dimensions[1]):
+            for x in range(self.dimensions[0]):
+                if y % 2 == 0:
+                    x = self.dimensions[0] - x - 1
+                print(x)
                 if self.updatedTiles[x][y] == 0:
                     currentTile = self.tileTypes[self.tiles[x][y]]
 
@@ -44,6 +47,25 @@ class tileManager:
                                     self.updatedTiles[x][y] = 1
                                     self.tiles[x][y + 1] = currentTile.id
                                     self.updatedTiles[x][y + 1] = 1
+                                else:
+
+                                    directions = []
+                                    if x - 1 >= 0:
+
+                                        if self.tiles[x - 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x - 1 ][y + 1] == 0:
+                                            directions.append(-1)
+                                    if x + 1 < self.dimensions[0]:
+                                        if self.tiles[x + 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x + 1 ][y + 1] == 0:
+                                            directions.append(1)
+                                    if directions != []:
+                                        chosenDirection = random.choice(directions)
+                                        self.tiles[x][y] = self.tiles[x + chosenDirection][y + 1]
+                                        self.updatedTiles[x][y] = 1
+
+                                        self.tiles[x + chosenDirection][y + 1] = currentTile.id
+                                        self.updatedTiles[x + chosenDirection][y + 1] = 1
+
+
         for y in range(self.dimensions[1]):
             for x in range(self.dimensions[0]):
                 self.updatedTiles[x][y] = 0
