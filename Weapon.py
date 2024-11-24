@@ -3,6 +3,7 @@ import math
 from Bullet import projectile
 
 weaponcolours = {"sandgun": "red",}
+weaponreloadtimes = {"sandgun": 0.1}
 
 class weapon:
     def __init__(self, _type):
