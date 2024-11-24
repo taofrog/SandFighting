@@ -12,7 +12,8 @@ run = True
 
 gravity = pygame.Vector2(0.0, 0.6)
 
-p1 = Player.player(32, 10, 0, 0, 2, 2, 0.2, 0.95, 50)
+p1 = Player.player(32, 10, 0, 0, 2.5, 2.5, 16, 0.05, 0.01, 50, _deugview=False)
+# xpos, ypos, xvel, yvel, xsize, xsize, speed, accel, deccel, jump
 
 air = tile(0, [0, 0, 0, 0])
 air.gravity = False
@@ -35,6 +36,8 @@ while run:
     dt = clock.tick(60)
     dt *= 0.001
 
+    print(1/dt)
+
     dir = pygame.Vector2()  # dir is a vector2 of each direction being pressed, to pass a single value to player
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -48,6 +51,16 @@ while run:
                 dir.x -= 1
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 dir.x += 1
+
+            if event.key == pygame.K_e:
+                gravity.x += 0.1
+            if event.key == pygame.K_q:
+                gravity.x -= 0.1
+            if event.key == pygame.K_r:
+                gravity.y -= 0.1
+            if event.key == pygame.K_f:
+                gravity.y += 0.1
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == ord('w'):
                 dir.y += 1
@@ -62,10 +75,7 @@ while run:
         gridPos = [int(gridPos[0] / manager.scale), int(gridPos[1] / manager.scale)]
         manager.tiles[gridPos[0]][gridPos[1]] = 1
 
-
-
     manager.update()
-
 
     # update player. takes directional input, 64x64 grid, and gravity
     substeps = 8
@@ -76,15 +86,10 @@ while run:
     screen.fill("white")
     # draw a rect for every solid cell
 
-
-
-
-
     screen.blit(manager.displaySurf, [0, 0])
     manager.updateSurf(0, 0)
 
     p1.draw(screen)
-
 
     # flip() the display to put your work on screen
     pygame.display.flip()

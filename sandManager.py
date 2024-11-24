@@ -12,9 +12,6 @@ class tile:
         self.gas = False
         self.displacingTiles = [0]
 
-
-
-
 class tileManager:
     def __init__(self, dimensions: tuple, tileTypes: Dict[int, tile]):
         self.tiles = [[0 for x in range(dimensions[0])] for y in range(dimensions[1])]
@@ -30,7 +27,6 @@ class tileManager:
             for x in range(self.dimensions[0]):
                 if y % 2 == 0:
                     x = self.dimensions[0] - x - 1
-                print(x)
                 if self.updatedTiles[x][y] == 0:
                     currentTile = self.tileTypes[self.tiles[x][y]]
 
@@ -39,10 +35,8 @@ class tileManager:
                         if currentTile.sandPhysics:
 
                             if y + 1 < self.dimensions[1]:
-                                print(self.tiles[x][y + 1])
 
                                 if self.tiles[x][y + 1] in currentTile.displacingTiles:
-                                    print("Test2")
                                     self.tiles[x][y] = self.tiles[x][y + 1]
                                     self.updatedTiles[x][y] = 1
                                     self.tiles[x][y + 1] = currentTile.id
