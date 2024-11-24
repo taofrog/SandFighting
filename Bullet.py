@@ -1,8 +1,10 @@
 import pygame
 import math
 
-bulletspeeds = {"sandgun": 320,}
-bulletcolours = {"sandgun": "red",}
+bulletspeeds = {"sandgun" : 32,
+                "blockgun": 64}
+bulletcolours = {"sandgun" : "red",
+                 "blockgun": [80, 80, 80, 255]}
 
 class projectile:
     def __init__(self, _pos, weapon, endpoint):
@@ -13,10 +15,10 @@ class projectile:
         self.vel = self.vel.normalize() * bulletspeeds[weapon]
 
     def update(self, dt):
-        self.pos += self.vel * dt
+        self.pos += self.vel * dt * 16
 
         distance = self.pos - self.endpoint
-        velscreen = self.vel * dt
+        velscreen = self.vel * dt * 16
 
         if distance.length() <= velscreen.length():
             return True
@@ -24,4 +26,4 @@ class projectile:
         return False
 
     def draw(self, screen):
-        pygame.draw.circle(screen, bulletcolours["sandgun"], self.pos, 10)
+        pygame.draw.circle(screen, bulletcolours[self.weapontype], self.pos, 10)

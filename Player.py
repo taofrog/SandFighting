@@ -5,13 +5,30 @@ from Weapon import weapon
 
 
 class player(playerphysics):
-    def __init__(self, x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _weapon,  _airaccel=-1, _airdeccel=-1, _deugview=False):
+    def __init__(self, x, y, xsize, ysize, _speed, _accel, _deccel, _jump, _weapon="sandgun", xvel=0 , yvel=0, _airaccel=-1, _airdeccel=-1, _deugview=False):
         super().__init__(x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel, _airdeccel, _deugview)
 
         self.mouse = pygame.Vector2()
+        self.availableguns = ["sandgun", "blockgun"]
         self.gun = weapon(_weapon)
 
-    def update(self, movement, grid, gravity, dt, mousepos, mousedown, sandmanager):
+    def cycleweapons(self, direction):
+        current = self.gun.weapontype
+        i = self.availableguns.index(current)
+        if direction > 0:
+            if i < len(self.availableguns) - 1:
+                i += 1
+            else:
+                i = 0
+        else:
+            if i != 0:
+                i -= 1
+            else:
+                i = len(self.availableguns) - 1
+
+        self.gun.weapontype = self.availableguns[i]
+
+    def update(self, movement: pygame.Vector2, grid, gravity, dt, mousepos, mousedown, sandmanager):
         self.updatephysics(movement, grid, gravity, dt)
 
         self.mouse = mousepos

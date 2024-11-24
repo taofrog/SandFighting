@@ -31,34 +31,33 @@ class tileManager:
                 if self.updatedTiles[x][y] == 0:
                     currentTile = self.tileTypes[self.tiles[x][y]]
 
-                    if currentTile.gravity:
+                    if y + 1 < self.dimensions[1]:
 
-                        if currentTile.sandPhysics:
+                        if currentTile.gravity:
 
-                            if y + 1 < self.dimensions[1]:
+                            if self.tiles[x][y + 1] in currentTile.displacingTiles:
+                                self.tiles[x][y] = self.tiles[x][y + 1]
+                                self.updatedTiles[x][y] = 1
+                                self.tiles[x][y + 1] = currentTile.id
+                                self.updatedTiles[x][y + 1] = 1
 
-                                if self.tiles[x][y + 1] in currentTile.displacingTiles:
-                                    self.tiles[x][y] = self.tiles[x][y + 1]
+                            elif currentTile.sandPhysics:
+
+                                directions = []
+                                if x - 1 >= 0:
+
+                                    if self.tiles[x - 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x - 1 ][y + 1] == 0:
+                                        directions.append(-1)
+                                if x + 1 < self.dimensions[0]:
+                                    if self.tiles[x + 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x + 1][y + 1] == 0:
+                                        directions.append(1)
+                                if directions != []:
+                                    chosenDirection = random.choice(directions)
+                                    self.tiles[x][y] = self.tiles[x + chosenDirection][y + 1]
                                     self.updatedTiles[x][y] = 1
-                                    self.tiles[x][y + 1] = currentTile.id
-                                    self.updatedTiles[x][y + 1] = 1
-                                else:
 
-                                    directions = []
-                                    if x - 1 >= 0:
-
-                                        if self.tiles[x - 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x - 1 ][y + 1] == 0:
-                                            directions.append(-1)
-                                    if x + 1 < self.dimensions[0]:
-                                        if self.tiles[x + 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x + 1 ][y + 1] == 0:
-                                            directions.append(1)
-                                    if directions != []:
-                                        chosenDirection = random.choice(directions)
-                                        self.tiles[x][y] = self.tiles[x + chosenDirection][y + 1]
-                                        self.updatedTiles[x][y] = 1
-
-                                        self.tiles[x + chosenDirection][y + 1] = currentTile.id
-                                        self.updatedTiles[x + chosenDirection][y + 1] = 1
+                                    self.tiles[x + chosenDirection][y + 1] = currentTile.id
+                                    self.updatedTiles[x + chosenDirection][y + 1] = 1
 
 
         for y in range(self.dimensions[1]):

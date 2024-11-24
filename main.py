@@ -11,7 +11,7 @@ run = True
 
 gravity = pygame.Vector2(0.0, 0.6)
 
-p1 = Player.player(32, 10, 0, 0, 2.5, 2.5, 16, 0.05, 0.01, 50, "sandgun", _deugview=False)
+p1 = Player.player(32, 10, 2.5, 2.5, 16, 0.05, 0.01, 50, "blockgun", _deugview=False)
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, accel, deccel, jump
 # can also set custom airaccel and airdeccel, as well as toggle debug view
 
@@ -19,10 +19,13 @@ air = tile(0, [0, 0, 0, 0])
 air.gravity = False
 air.sandPhysics = False
 sand = tile(1, [255, 0, 0, 255])
+block = tile(2, [80, 80, 80, 255])
+block.sandPhysics = False
 
 tileTypes = {
     0: air,
-    1: sand
+    1: sand,
+    2: block,
 }
 
 manager = tileManager((64, 64), tileTypes)
@@ -69,6 +72,10 @@ while run:
                 dir.x += 1
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 dir.x -= 1
+
+        if event.type == pygame.MOUSEWHEEL:
+            p1.cycleweapons(event.y)
+
     if pygame.mouse.get_pressed(3)[0]:
         gridPos = mousepos
         gridPos = [int(gridPos[0] / manager.scale), int(gridPos[1] / manager.scale)]
