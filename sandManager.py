@@ -2,6 +2,7 @@ import pygame
 import random
 from typing import Dict
 
+
 class tile:
     def __init__(self, ID, colour):
         self.id = ID

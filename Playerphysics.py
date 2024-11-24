@@ -1,6 +1,7 @@
 import pygame
 import math
 
+
 class playerphysics:
     def __init__(self, x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel, _airdeccel, _deugview):
         self.pos = pygame.Vector2(x, y)

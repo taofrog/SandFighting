@@ -1,13 +1,25 @@
 import pygame
 import math
 from Playerphysics import playerphysics
+from Weapon import weapon
+
 
 class player(playerphysics):
-    def __init__(self, x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel=-1, _airdeccel=-1, _deugview=False):
+    def __init__(self, x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _weapon,  _airaccel=-1, _airdeccel=-1, _deugview=False):
         super().__init__(x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel, _airdeccel, _deugview)
 
-    def update(self, movement, grid, gravity, dt):
+        self.mouse = pygame.Vector2()
+        self.gun = weapon(_weapon)
+
+    def update(self, movement, grid, gravity, dt, mousepos, mousedown, sandmanager):
         self.updatephysics(movement, grid, gravity, dt)
+
+        self.mouse = mousepos
+
+        if mousedown:
+            self.gun.shoot(self.pos, self.size, mousepos)
+
+        self.gun.updatebullets(dt, sandmanager)
 
     def draw(self, screen):
 
@@ -56,3 +68,5 @@ class player(playerphysics):
         )  # translating from world to screen space
 
         pygame.draw.rect(screen, colour, p)
+
+        self.gun.draw(screen, self.pos, self.size, self.mouse)
