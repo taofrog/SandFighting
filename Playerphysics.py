@@ -192,6 +192,10 @@ class playerphysics:
         # MOVEMENT
 
         gravity = grav * self.wet
+        accel = self.accel * self.wet
+        deccel = self.deccel * self.wet
+        airaccel = self.airaccel * self.wet
+        aireaccel = self.airdeccel * self.wet
         print(self.wet)
 
         self.move += movement
@@ -206,7 +210,7 @@ class playerphysics:
         if self.grounded:
             if gravspacemove.x:
 
-                gravspacevel.x += gravspacemove.x * self.speed * self.accel * self.wet / abs(gravspacemove.x)
+                gravspacevel.x += gravspacemove.x * self.speed * accel / abs(gravspacemove.x)
 
                 if gravspacevel.x > self.speed:
                     gravspacevel.x = self.speed
@@ -214,10 +218,10 @@ class playerphysics:
                     gravspacevel.x = -self.speed
             else:
 
-                if gravspacevel.x > self.deccel * self.wet * self.speed:
-                    gravspacevel.x -= self.speed * self.wet * self.deccel
-                elif gravspacevel.x < -self.deccel * self.wet * self.speed:
-                    gravspacevel.x += self.speed * self.wet * self.deccel
+                if gravspacevel.x > deccel * self.speed:
+                    gravspacevel.x -= self.speed * deccel
+                elif gravspacevel.x < -deccel * self.speed:
+                    gravspacevel.x += self.speed * deccel
                 else:
                     gravspacevel.x = 0
 
@@ -227,7 +231,7 @@ class playerphysics:
         else:
             if gravspacemove.x:
 
-                gravspacevel.x += gravspacemove.x * self.speed * self.airaccel / (abs(gravspacemove.x) * self.wet)
+                gravspacevel.x += gravspacemove.x * self.speed * self.airaccel / (abs(gravspacemove.x))
 
                 if gravspacevel.x > self.speed:
                     gravspacevel.x = self.speed
@@ -235,10 +239,10 @@ class playerphysics:
                     gravspacevel.x = -self.speed
             else:
 
-                if gravspacevel.x > self.airdeccel * self.speed / self.wet:
-                    gravspacevel.x -= self.speed * self.airdeccel / self.wet
-                elif gravspacevel.x < -self.airdeccel * self.speed / self.wet:
-                    gravspacevel.x += self.speed * self.airdeccel / self.wet
+                if gravspacevel.x > self.airdeccel * self.speed:
+                    gravspacevel.x -= self.speed * self.airdeccel
+                elif gravspacevel.x < -self.airdeccel * self.speed:
+                    gravspacevel.x += self.speed * self.airdeccel
                 else:
                     gravspacevel.x = 0
 
