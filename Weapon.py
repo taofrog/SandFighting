@@ -15,20 +15,22 @@ class weapon:
         self.bullets = []
         self.reload = 0
 
-    def updatebullets(self, dt, sandmanager):
+    def updatebullets(self, dt, sandmanager, grid):
         if self.reload > 0:
             self.reload -= dt
         else:
             self.reload = 0
 
         for bullet in self.bullets:
-            if bullet.update(dt):
+            if bullet.update(dt) or bullet.tilecollision(grid):
                 if bullet.weapontype == "sandgun":
-                    sandmanager.tiles[math.floor(bullet.endpoint[0] / 16)][math.floor(bullet.endpoint[1] / 16)] = 1
+                    sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 1
                 if bullet.weapontype == "blockgun":
-                    sandmanager.tiles[math.floor(bullet.endpoint[0] / 16)][math.floor(bullet.endpoint[1] / 16)] = 2
+                    sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 2
                 if bullet.weapontype == "watergun":
-                    sandmanager.tiles[math.floor(bullet.endpoint[0] / 16)][math.floor(bullet.endpoint[1] / 16)] = 3
+                    sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 3
+                    sandmanager.tiles[math.floor(bullet.pos[0] / 16) + 1][math.floor(bullet.pos[1] / 16)] = 3
+                    sandmanager.tiles[math.floor(bullet.pos[0] / 16) - 1][math.floor(bullet.pos[1] / 16)] = 3
 
                 self.bullets.remove(bullet)
 

@@ -36,7 +36,7 @@ class player(playerphysics):
         if mousedown:
             self.gun.shoot(self.pos, self.size, mousepos)
 
-        self.gun.updatebullets(dt, sandmanager)
+        self.gun.updatebullets(dt, sandmanager, grid)
 
     def draw(self, screen):
 
