@@ -72,7 +72,7 @@ class tileManager:
 
                                 elif currentTile.liquid:
 
-                                    displacements = [0, 0]
+                                    displacements = [-1, 1]
 
                                     foundL = False
 
@@ -88,12 +88,13 @@ class tileManager:
                                                 foundL = True
 
                                                 break
-
-                                        displacements[0] -= 1
+                                            displacements[0] -= 1
+                                        else:
+                                            break
 
                                     while x + displacements[1] < self.dimensions[0]:
 
-                                        print(x + displacements[1])
+                                        #print(x + displacements[1])
 
                                         if self.tiles[x + displacements[1]][y] == 0:
 
@@ -104,7 +105,9 @@ class tileManager:
 
                                                 break
 
-                                        displacements[1] += 1
+                                            displacements[1] += 1
+                                        else:
+                                            break
 
                                     dir = 0
 
@@ -154,7 +157,6 @@ class tileManager:
                 self.editSurf.set_at((x + offsetX, y + offsetY), colour)
 
         self.displaySurf = pygame.transform.scale_by(self.editSurf, self.scale)
-
 
 
 
