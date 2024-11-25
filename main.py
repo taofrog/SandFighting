@@ -21,11 +21,13 @@ air.sandPhysics = False
 sand = tile(1, [255, 0, 0, 255])
 block = tile(2, [80, 80, 80, 255])
 block.sandPhysics = False
+water = tile(3, [0, 0, 255, 255])
 
 tileTypes = {
     0: air,
     1: sand,
     2: block,
+    3: water
 }
 
 manager = tileManager((64, 64), tileTypes)

@@ -9,7 +9,7 @@ class player(playerphysics):
         super().__init__(x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel, _airdeccel, _deugview)
 
         self.mouse = pygame.Vector2()
-        self.availableguns = ["sandgun", "blockgun"]
+        self.availableguns = ["sandgun", "blockgun", "watergun"]
         self.gun = weapon(_weapon)
 
     def cycleweapons(self, direction):
@@ -77,7 +77,7 @@ class player(playerphysics):
             else:
                 colour = "blue"
         else:
-            colour = "blue"
+            colour = "green"
 
         p = pygame.Rect(
             self.pos.x * 16 - self.size.x * 8, self.pos.y * 16 - self.size.y * 8,

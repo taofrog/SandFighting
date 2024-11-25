@@ -41,23 +41,106 @@ class tileManager:
                                 self.tiles[x][y + 1] = currentTile.id
                                 self.updatedTiles[x][y + 1] = 1
 
-                            elif currentTile.sandPhysics:
+                            elif currentTile.sandPhysics or currentTile.liquid:
 
                                 directions = []
+
                                 if x - 1 >= 0:
 
-                                    if self.tiles[x - 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x - 1 ][y + 1] == 0:
+                                    if self.tiles[x - 1][y + 1] in currentTile.displacingTiles and \
+                                            self.updatedTiles[x - 1][y + 1] == 0:
                                         directions.append(-1)
+
                                 if x + 1 < self.dimensions[0]:
-                                    if self.tiles[x + 1][y + 1] in currentTile.displacingTiles and self.updatedTiles[x + 1][y + 1] == 0:
+
+                                    if self.tiles[x + 1][y + 1] in currentTile.displacingTiles and \
+                                            self.updatedTiles[x + 1][y + 1] == 0:
                                         directions.append(1)
+
                                 if directions != []:
+
                                     chosenDirection = random.choice(directions)
+
                                     self.tiles[x][y] = self.tiles[x + chosenDirection][y + 1]
+
                                     self.updatedTiles[x][y] = 1
 
                                     self.tiles[x + chosenDirection][y + 1] = currentTile.id
+
                                     self.updatedTiles[x + chosenDirection][y + 1] = 1
+
+
+                                elif currentTile.liquid:
+
+                                    displacements = [0, 0]
+
+                                    foundL = False
+
+                                    foundR = False
+
+                                    while x + displacements[0] >= 0:
+
+                                        if self.tiles[x + displacements[0]][y] == 0:
+
+                                            if self.tiles[x + displacements[0]][
+                                                y + 1] in currentTile.displacingTiles and \
+                                                    self.updatedTiles[x + displacements[0]][y + 1] == 0:
+                                                foundL = True
+
+                                                break
+
+                                        displacements[0] -= 1
+
+                                    while x + displacements[1] < self.dimensions[0]:
+
+                                        print(x + displacements[1])
+
+                                        if self.tiles[x + displacements[1]][y] == 0:
+
+                                            if self.tiles[x + displacements[1]][
+                                                y + 1] in currentTile.displacingTiles and \
+                                                    self.updatedTiles[x + displacements[1]][y + 1] == 0:
+                                                foundR = True
+
+                                                break
+
+                                        displacements[1] += 1
+
+                                    dir = 0
+
+                                    if foundL and foundR:
+
+                                        if abs(displacements[0]) > displacements[1]:
+
+                                            dir = displacements[0]
+
+                                        elif abs(displacements[1]) > displacements[0]:
+
+                                            dir = displacements[1]
+
+                                        else:
+
+                                            dir = displacements[0]
+
+                                    elif foundL:
+
+                                        dir = displacements[0]
+
+                                    elif foundR:
+
+                                        dir = displacements[1]
+
+                                    else:
+
+                                        break
+
+                                    self.tiles[x][y] = self.tiles[x + dir][y + 1]
+
+                                    self.tiles[x + dir][y + 1] = currentTile.id
+
+                                    self.updatedTiles[x][y] = 1
+
+                                    self.updatedTiles[x + dir][y + 1] = 1
 
 
         for y in range(self.dimensions[1]):

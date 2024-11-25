@@ -2,9 +2,11 @@ import pygame
 import math
 
 bulletspeeds = {"sandgun" : 32,
-                "blockgun": 64}
+                "blockgun": 64,
+                "watergun": 32}
 bulletcolours = {"sandgun" : "red",
-                 "blockgun": [80, 80, 80, 255]}
+                 "blockgun": [80, 80, 80, 255],
+                 "watergun": "blue"}
 
 class projectile:
     def __init__(self, _pos, weapon, endpoint):

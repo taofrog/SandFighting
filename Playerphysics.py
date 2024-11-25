@@ -27,6 +27,8 @@ class playerphysics:
         self.debugview = _deugview
 
         self.stopthingsbreaking = 0.0001
+        self.wet = 1
+        self.wetfac = 0.2
 
     def axistilecollisions(self, grid, axis, gravity):
         overlap = 0  # initialising empty variable
@@ -45,7 +47,7 @@ class playerphysics:
             rightsquares = []
 
             for cornerpos in [tl, tr, bl, br]:
-                if grid[int(cornerpos.x)][int(cornerpos.y)] != 0:
+                if grid[int(cornerpos.x)][int(cornerpos.y)] != 0 and grid[int(cornerpos.x)][int(cornerpos.y)] != 3:
                     self.colliding = True
 
                     if cornerpos.x < self.pos.x:
@@ -62,7 +64,7 @@ class playerphysics:
                 rightsquares.append(pygame.Vector2(math.floor(br.x), math.floor(tl.y + i)))
 
             for square in leftsquares:
-                if grid[int(square.x)][int(square.y)] != 0:
+                if grid[int(square.x)][int(square.y)] != 0 and grid[int(square.x)][int(square.y)] != 3:
                     self.colliding = True
                     overlap = self.pos.x - self.size.x / 2 - (square.x + 1)
 
@@ -70,7 +72,7 @@ class playerphysics:
                     break
 
             for square in rightsquares:
-                if grid[int(square.x)][int(square.y)] != 0:
+                if grid[int(square.x)][int(square.y)] != 0 and grid[int(square.x)][int(square.y)] != 3:
                     self.colliding = True
                     overlap = self.pos.x + self.size.x / 2 - square.x
 
@@ -82,7 +84,7 @@ class playerphysics:
             bottomsquares = []
 
             for cornerpos in [tl, bl, tr, br]:
-                if grid[int(cornerpos.x)][int(cornerpos.y)] != 0:
+                if grid[int(cornerpos.x)][int(cornerpos.y)] != 0 and grid[int(cornerpos.x)][int(cornerpos.y)] != 3:
                     self.colliding = True
 
                     if cornerpos.y < self.pos.y:
@@ -99,7 +101,7 @@ class playerphysics:
                     bottomsquares.append(pygame.Vector2(math.floor(tl.x + i), math.floor(br.y)))
 
             for square in topsquares:
-                if grid[int(square.x)][int(square.y)] != 0:
+                if grid[int(square.x)][int(square.y)] != 0 and grid[int(square.x)][int(square.y)] != 3:
                     self.colliding = True
                     overlap = self.pos.y - self.size.y / 2 - (square.y + 1)
 
@@ -107,7 +109,7 @@ class playerphysics:
                     break
 
             for square in bottomsquares:
-                if grid[int(square.x)][int(square.y)] != 0:
+                if grid[int(square.x)][int(square.y)] != 0 and grid[int(square.x)][int(square.y)] != 3:
                     self.colliding = True
                     overlap = self.pos.y + self.size.y / 2 - square.y
 
@@ -124,11 +126,17 @@ class playerphysics:
         gridpos = [int(self.pos.x), int(self.pos.y)]  # what cell the player is currently in. int for ease
 
         # check if center is inside a block i think it will squish here. need to look out for bugs
-        if grid[gridpos[0]][gridpos[1]] != 0:
+
+        if grid[gridpos[0]][gridpos[1]] == 3:
+            self.wet = self.wetfac
+            self.colliding = False
+
+        elif grid[gridpos[0]][gridpos[1]] != 0:
             self.colliding = True
             #return
         else:
             self.colliding = False
+            self.wet = 1
 
         # check if each surrounding cell is solid, and check if there is any overlap with that cell.
 
@@ -180,8 +188,11 @@ class playerphysics:
         else:
             self.grounded = False
 
-    def updatephysics(self, movement, grid, gravity, dt):
+    def updatephysics(self, movement, grid, grav, dt):
         # MOVEMENT
+
+        gravity = grav * self.wet
+        print(self.wet)
 
         self.move += movement
 
@@ -195,7 +206,7 @@ class playerphysics:
         if self.grounded:
             if gravspacemove.x:
 
-                gravspacevel.x += gravspacemove.x * self.speed * self.accel / abs(gravspacemove.x)
+                gravspacevel.x += gravspacemove.x * self.speed * self.accel * self.wet / abs(gravspacemove.x)
 
                 if gravspacevel.x > self.speed:
                     gravspacevel.x = self.speed
@@ -203,10 +214,10 @@ class playerphysics:
                     gravspacevel.x = -self.speed
             else:
 
-                if gravspacevel.x > self.deccel * self.speed:
-                    gravspacevel.x -= self.speed * self.deccel
-                elif gravspacevel.x < -self.deccel * self.speed:
-                    gravspacevel.x += self.speed * self.deccel
+                if gravspacevel.x > self.deccel * self.wet * self.speed:
+                    gravspacevel.x -= self.speed * self.wet * self.deccel
+                elif gravspacevel.x < -self.deccel * self.wet * self.speed:
+                    gravspacevel.x += self.speed * self.wet * self.deccel
                 else:
                     gravspacevel.x = 0
 
@@ -216,7 +227,7 @@ class playerphysics:
         else:
             if gravspacemove.x:
 
-                gravspacevel.x += gravspacemove.x * self.speed * self.airaccel / abs(gravspacemove.x)
+                gravspacevel.x += gravspacemove.x * self.speed * self.airaccel / (abs(gravspacemove.x) * self.wet)
 
                 if gravspacevel.x > self.speed:
                     gravspacevel.x = self.speed
@@ -224,10 +235,10 @@ class playerphysics:
                     gravspacevel.x = -self.speed
             else:
 
-                if gravspacevel.x > self.airdeccel * self.speed:
-                    gravspacevel.x -= self.speed * self.airdeccel
-                elif gravspacevel.x < -self.airdeccel * self.speed:
-                    gravspacevel.x += self.speed * self.airdeccel
+                if gravspacevel.x > self.airdeccel * self.speed / self.wet:
+                    gravspacevel.x -= self.speed * self.airdeccel / self.wet
+                elif gravspacevel.x < -self.airdeccel * self.speed / self.wet:
+                    gravspacevel.x += self.speed * self.airdeccel / self.wet
                 else:
                     gravspacevel.x = 0
 

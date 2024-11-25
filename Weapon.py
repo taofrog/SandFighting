@@ -3,9 +3,11 @@ import math
 from Bullet import projectile
 
 weaponcolours = {"sandgun" : "red",
-                 "blockgun": "gray"}  # pygame colour literal
+                 "blockgun": [80, 80, 80, 255],
+                 "watergun": "blue"}  # pygame colour literal
 weaponreloadtimes = {"sandgun" : 0.1,
-                     "blockgun": 0.1} # time between bullets, in seconds
+                     "blockgun": 0.1,
+                     "watergun": 0.1} # time between bullets, in seconds
 
 class weapon:
     def __init__(self, _type):
@@ -25,6 +27,8 @@ class weapon:
                     sandmanager.tiles[math.floor(bullet.endpoint[0] / 16)][math.floor(bullet.endpoint[1] / 16)] = 1
                 if bullet.weapontype == "blockgun":
                     sandmanager.tiles[math.floor(bullet.endpoint[0] / 16)][math.floor(bullet.endpoint[1] / 16)] = 2
+                if bullet.weapontype == "watergun":
+                    sandmanager.tiles[math.floor(bullet.endpoint[0] / 16)][math.floor(bullet.endpoint[1] / 16)] = 3
 
                 self.bullets.remove(bullet)
 
