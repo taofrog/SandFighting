@@ -93,8 +93,8 @@ while run:
             p1.cycleweapons(event.y)
 
     if pygame.mouse.get_pressed(3)[0]:
-        gridPos = mousepos
-        gridPos = [int(gridPos[0] / manager.scale), int(gridPos[1] / manager.scale)]
+        #gridPos = mousepos
+        #gridPos = [int(gridPos[0] / manager.scale), int(gridPos[1] / manager.scale)]
         #manager.tiles[gridPos[0]][gridPos[1]] = 1
 
         mousedown = True

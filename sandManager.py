@@ -22,8 +22,13 @@ class tileManager:
         self.editSurf = pygame.surface.Surface(dimensions)
         self.scale = 16
         self.displaySurf = pygame.surface.Surface([dimensions[0] * self.scale, dimensions[0] * self.scale])
+        self.showupdates = True
 
     def update(self):
+        for y in range(self.dimensions[1]):
+            for x in range(self.dimensions[0]):
+                self.updatedTiles[x][y] = 0
+
         for y in range(self.dimensions[1]):
             for x in range(self.dimensions[0]):
                 if y % 2 == 0:
@@ -120,15 +125,12 @@ class tileManager:
                                     self.updatedTiles[x][y] = 1
                                     self.updatedTiles[x + dir][y + 1] = 1
 
-
-        for y in range(self.dimensions[1]):
-            for x in range(self.dimensions[0]):
-                self.updatedTiles[x][y] = 0
-
     def updateSurf(self, offsetX, offsetY):
         for x in range(self.dimensions[0]):
             for y in range(self.dimensions[1]):
                 colour = self.tileTypes[self.tiles[x][y]].colour
                 self.editSurf.set_at((x + offsetX, y + offsetY), colour)
+                if self.showupdates and self.updatedTiles[x][y] == 1:
+                    self.editSurf.set_at((x + offsetX, y + offsetY), [255,255,255,100])
 
         self.displaySurf = pygame.transform.scale_by(self.editSurf, self.scale)
