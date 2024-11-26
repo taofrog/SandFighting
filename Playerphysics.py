@@ -196,7 +196,6 @@ class playerphysics:
         deccel = self.deccel * self.wet
         airaccel = self.airaccel * self.wet
         aireaccel = self.airdeccel * self.wet
-        print(self.wet)
 
         self.move += movement
 
