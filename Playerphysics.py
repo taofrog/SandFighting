@@ -224,7 +224,7 @@ class playerphysics:
                 else:
                     gravspacevel.x = 0
 
-            if gravspacemove.y < 0:
+            if gravspacemove.y < -gravity.length():
                 gravspacevel.y = -self.jump
                 self.grounded = False
         else:
