@@ -13,8 +13,12 @@ class enemy(playerphysics):
         self.dir = pygame.Vector2()
         self.cooldown = 0
 
+
         self.hitdelay = 0.8
+
         self.damage = 10
+        self.boredOfX = 0
+        self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
 
         self.health = 100
 
@@ -55,6 +59,27 @@ class enemy(playerphysics):
         self.dir = player.pos - self.pos
         if self.dir.length_squared() > 25:
             dir = self.dir
+
+        if abs(self.lastCoords.x - self.pos.x) <= 0.01:
+            self.boredOfX += 1
+            #print(abs(self.lastCoords.x - self.pos.x))
+        else:
+            self.boredOfX = 0
+        #print(self.pos.x, self.lastCoords.x)
+        #print(self.pos)
+        tilePos = [int(self.pos.x), int(self.pos.y)]
+
+        if self.boredOfX >= 100:
+            facing = math.copysign(1, dir.x) * 2
+
+
+
+            sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 3
+            #sandmanager.tiles[tilePos[0]][3] = 2
+            print(tilePos, int(tilePos[0] + math.copysign(1, dir.x)))
+        self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
+
+
 
         self.gun.updatebullets(dt, sandmanager, grid, gravity)
 
@@ -111,7 +136,6 @@ class enemy(playerphysics):
             self.pos.x * 16 - self.size.x * 8, self.pos.y * 16 - self.size.y * 8,
             self.size.x * 16, self.size.y * 16
         )  # translating from world to screen space
-
 
         if self.health > 0:
             pygame.draw.rect(screen, colour, p)
