@@ -30,9 +30,9 @@ class playerphysics:
         self.wet = 1
         self.wetfac = 0.2
 
-        self.sanddamage = 1
-        self.stonedamage = 2
-        self.explosiondamage = 5
+        self.sanddamage = 10
+        self.stonedamage = 20
+        self.explosiondamage = 7
 
     def axistilecollisions(self, grid, axis, gravity):
         overlap = 0  # initialising empty variable

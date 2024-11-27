@@ -1,3 +1,4 @@
+
 import pygame
 import math
 from Playerphysics import playerphysics
@@ -16,15 +17,13 @@ class enemy(playerphysics):
 
         self.hitdelay = 0.8
 
-        self.damage = 10
+        self.damage = 4
+
+        self.triestobreak = 500
         self.boredOfX = 0
         self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
 
         self.health = 100
-
-        self.sanddamage = 1
-        self.stonedamage = 2
-        self.explosiondamage = 5
 
     def dealdamage(self):
         if self.cooldown <= 0:
@@ -69,10 +68,8 @@ class enemy(playerphysics):
         #print(self.pos)
         tilePos = [int(self.pos.x), int(self.pos.y)]
 
-        if self.boredOfX >= 100:
+        if self.boredOfX >= self.triestobreak:
             facing = math.copysign(1, dir.x) * 2
-
-
 
             sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 3
             #sandmanager.tiles[tilePos[0]][3] = 2

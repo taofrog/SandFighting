@@ -2,10 +2,10 @@ import pygame
 import math
 
 # speed, colour, gravity
-bullets = {"sandgun"  : [63, "red", False],
-            "blockgun": [64, [80, 80, 80, 255], False],
-            "watergun": [64, "blue", False],
-            "grenade" : [64, "darkgreen", True]}
+bullets = {"sandgun"  : [75, "red", False],
+            "blockgun": [75, [80, 80, 80, 255], False],
+            "watergun": [75, "blue", False],
+            "grenade" : [75, "darkgreen", True]}
 
 class projectile:
     def __init__(self, _pos, weapon, endpoint):

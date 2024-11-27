@@ -11,21 +11,23 @@ waveamounts = {1: 1,
 class wavemanager:
     def __init__(self, *args: enemy):
         self.enemies = [fellow for fellow in args]
-        self.wave = 0
+        self.wave = 1
         self.enemieskilled = 0
         self.totalkills = 0
 
     def spawnenemy(self, grid, player):
+        print("boo")
         x = random.randint(1, 62)
+        self.enemies.append(enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun"))
 
     def update(self, grid, player):
         if self.enemieskilled >= waveamounts[self.wave]:
             self.wave += 1
             self.enemieskilled = 0
 
-        rand = random.randint(0, 1000) / 1000
-        if self.wave/1000 <= rand:
-            self.spawnenemy()
+        rand = random.randint(0, 100000) / 100000
+        if self.wave/1000 >= rand:
+            self.spawnenemy(grid, player)
 
     def updateenemies(self, player, manager, gravity, dt):
         for fellow in self.enemies:

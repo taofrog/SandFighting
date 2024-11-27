@@ -6,9 +6,9 @@ weaponcolours = {"sandgun" : "red",
                  "blockgun": [80, 80, 80, 255],
                  "watergun": "blue",
                  "grenade" : "darkgreen"}  # pygame colour literal
-weaponreloadtimes = {"sandgun" : 0.1,
-                     "blockgun": 0.1,
-                     "watergun": 0.1,
+weaponreloadtimes = {"sandgun" : 0.08,
+                     "blockgun": 0.12,
+                     "watergun": 0.05,
                      "grenade" : 1} # time between bullets, in seconds
 
 class weapon:
