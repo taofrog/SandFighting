@@ -41,7 +41,6 @@ class player(playerphysics):
             frame = pygame.transform.scale_by(frame, self.scaleDif)
             self.mouthFrames.append(frame)
 
-        self.tilesize = 16
 
     def cycleweapons(self, direction):
         current = self.gun.weapontype
@@ -70,6 +69,7 @@ class player(playerphysics):
                 enemedamage += enemy.dealdamage()
 
         self.health -= worlddamage + enemedamage
+        #print(self.health)
 
         self.mouse = mousepos
 
@@ -92,13 +92,13 @@ class player(playerphysics):
 
             for i in range(1, math.floor(br.x + 1) - math.floor(tl.x) - 1):
                 p1 = pygame.Rect(
-                    math.floor(tl.x + i) * self.tilesize, math.floor(tl.y) * self.tilesize,
-                    self.tilesize, self.tilesize
+                    math.floor(tl.x + i) * 16, math.floor(tl.y) * 16,
+                    16, 16
                 )  # translating from world to screen space
 
                 p2 = pygame.Rect(
-                    math.floor(tl.x + i) * self.tilesize, math.floor(br.y) * self.tilesize,
-                    self.tilesize, self.tilesize
+                    math.floor(tl.x + i) * 16, math.floor(br.y) * 16,
+                    16, 16
                 )  # translating from world to screen space
 
                 pygame.draw.rect(screen, "green", p1)
@@ -106,13 +106,13 @@ class player(playerphysics):
 
             for i in range(1, math.floor(br.y + 1) - math.floor(tl.y) - 1):
                 p1 = pygame.Rect(
-                    math.floor(tl.x) * self.tilesize, math.floor(tl.y + i) * self.tilesize,
-                    self.tilesize, self.tilesize
+                    math.floor(tl.x) * 16, math.floor(tl.y + i) * 16,
+                    16, 16
                 )  # translating from world to screen space
 
                 p2 = pygame.Rect(
-                    math.floor(br.x) * self.tilesize, math.floor(tl.y + i) * self.tilesize,
-                    self.tilesize, self.tilesize
+                    math.floor(br.x) * 16, math.floor(tl.y + i) * 16,
+                    16, 16
                 )  # translating from world to screen space
 
                 pygame.draw.rect(screen, "green", p1)
@@ -126,8 +126,8 @@ class player(playerphysics):
             colour = "green"
 
         p = pygame.Rect(
-            self.pos.x * self.tilesize - self.size.x * self.tilesize / 2, self.pos.y * self.tilesize - self.size.y * self.tilesize / 2,
-            self.size.x * self.tilesize, self.size.y * self.tilesize
+            self.pos.x * 16 - self.size.x * 8, self.pos.y * 16 - self.size.y * 8,
+            self.size.x * 16, self.size.y * 16
         )  # translating from world to screen space
 
         self.mouthFrame += 1
@@ -143,6 +143,7 @@ class player(playerphysics):
         if self.animateFrame > 2:
             self.animateFrame = 0
 
+        #print(self.health)
         if self.health > 0:
             screen.blit(self.frames[self.animateFrame], p)
 
