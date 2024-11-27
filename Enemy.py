@@ -61,11 +61,8 @@ class enemy(playerphysics):
 
         if abs(self.lastCoords.x - self.pos.x) <= 0.01:
             self.boredOfX += 1
-            #print(abs(self.lastCoords.x - self.pos.x))
         else:
             self.boredOfX = 0
-        #print(self.pos.x, self.lastCoords.x)
-        #print(self.pos)
         tilePos = [int(self.pos.x), int(self.pos.y)]
 
         if self.boredOfX >= self.triestobreak:
@@ -73,15 +70,18 @@ class enemy(playerphysics):
 
             sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 3
             #sandmanager.tiles[tilePos[0]][3] = 2
-            print(tilePos, int(tilePos[0] + math.copysign(1, dir.x)))
+
         self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
-
-
 
         self.gun.updatebullets(dt, sandmanager, grid, gravity)
 
+        selfrect = pygame.Rect(self.pos - (self.size / 2), self.size)
+
         worlddamage = self.updatephysics(dir, grid, gravity, dt)
-        self.health -= worlddamage
+        bulletstouching = player.gun.checkcollision(selfrect)
+        playerdamage = len(bulletstouching)
+
+        self.health -= worlddamage + playerdamage
 
         if self.health <= 0:
             return True

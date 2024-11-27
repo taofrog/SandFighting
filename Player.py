@@ -9,8 +9,9 @@ class player(playerphysics):
         super().__init__(x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel, _airdeccel, _deugview)
 
         self.mouse = pygame.Vector2()
-        self.availableguns = ["sandgun", "blockgun", "watergun", "grenade"]
+        self.availableguns = ["sandgun", "blockgun", "watergun"]
         self.gun = weapon(_weapon)
+        self.gun2 = weapon("grenade")
         self.surfSheet = pygame.image.load("Assets/PinkGuyNoMouth.png")
         self.frame = 0
         self.mouthAnimateFrame = 0
@@ -57,7 +58,7 @@ class player(playerphysics):
 
         self.gun.weapontype = self.availableguns[i]
 
-    def update(self, movement: pygame.Vector2, grid, gravity, dt, mousepos, mousedown, sandmanager, enemies):
+    def update(self, movement: pygame.Vector2, grid, gravity, dt, mousepos, mousedown, mousedown2, sandmanager, enemies):
         worlddamage = self.updatephysics(movement, grid, gravity, dt)
         enemedamage = 0
 
@@ -68,14 +69,17 @@ class player(playerphysics):
                 enemedamage += enemy.dealdamage()
 
         self.health -= worlddamage + enemedamage
-        print(self.health)
+        #print(self.health)
 
         self.mouse = mousepos
 
         if mousedown:
             self.gun.shoot(self.pos, self.size, mousepos)
+        if mousedown2:
+            self.gun2.shoot(self.pos, self.size, mousepos)
 
         self.gun.updatebullets(dt, sandmanager, grid, gravity)
+        self.gun2.updatebullets(dt, sandmanager, grid, gravity)
 
     def draw(self, screen):
 
@@ -140,9 +144,7 @@ class player(playerphysics):
 
         mouthOffset = pygame.Vector2((-8.5 * self.scaleDif) + (self.vel.x / 4), 0)
 
-
-
         screen.blit(self.mouthFrames[self.mouthAnimateFrame], p.center + mouthOffset)
 
-
+        self.gun2.draw(screen, self.pos, self.size, self.mouse)
         self.gun.draw(screen, self.pos, self.size, self.mouse)

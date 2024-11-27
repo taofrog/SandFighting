@@ -17,6 +17,16 @@ class weapon:
         self.bullets = []
         self.reload = 0
 
+    def checkcollision(self, rect:pygame.Rect):
+        touching = []
+        for bullet in self.bullets:
+            if rect.collidepoint(bullet.pos / 16):
+                touching.append(bullet.vel.length())
+                bullet.endpoint = bullet.pos
+
+        print(touching)
+        return touching
+
     def updatebullets(self, dt, sandmanager, grid, gravity):
         if self.reload > 0:
             self.reload -= dt

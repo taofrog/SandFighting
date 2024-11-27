@@ -5,6 +5,7 @@ import Enemy
 import Player
 from sandManager import *
 from waveManager import wavemanager
+from UIManager import UIManager
 
 pygame.init()
 screen = pygame.display.set_mode((1024, 1024))
@@ -14,7 +15,7 @@ run = True
 gravity = pygame.Vector2(0.0, 0.6)
 
 p1 = Player.player(32, 10, 2.5, 2.5, 16, 0.05, 0.01, 70, "blockgun", _deugview=False)
-enemywaves = wavemanager(Enemy.enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun"))
+enemywaves = wavemanager()
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, accel, deccel, jump
 # can also set custom airaccel and airdeccel, as well as toggle debug view
 
@@ -54,12 +55,16 @@ for y in range(-1, 65):
         elif y > 32:
             manager.tiles[x][y] = 1
 
+enemywaves.spawnenemy(manager.tiles, p1)
+uimanager = UIManager(pygame.font.SysFont("Arial", 15))
+
 while run:
     dt = clock.tick(60)
     dt *= 0.001
 
     mousepos = pygame.mouse.get_pos()
     mousedown = False
+    mousedown2 = False
 
     dir = pygame.Vector2()  # dir is a vector2 of each direction being pressed, to pass a single value to player
     for event in pygame.event.get():
@@ -98,11 +103,9 @@ while run:
             p1.cycleweapons(event.y)
 
     if pygame.mouse.get_pressed(3)[0]:
-        #gridPos = mousepos
-        #gridPos = [int(gridPos[0] / manager.scale), int(gridPos[1] / manager.scale)]
-        #manager.tiles[gridPos[0]][gridPos[1]] = 1
-
         mousedown = True
+    if pygame.mouse.get_pressed(3)[2]:
+        mousedown2 = True
 
     manager.update()
     enemywaves.update(manager.tiles, p1)
@@ -110,7 +113,7 @@ while run:
     # update player. takes directional input, 64x64 grid, and gravity
     substeps = 8
     for _ in range(substeps):
-        p1.update(dir, manager.tiles, gravity, dt / substeps, mousepos, mousedown, manager, enemywaves.enemies)
+        p1.update(dir, manager.tiles, gravity, dt / substeps, mousepos, mousedown, mousedown2, manager, enemywaves.enemies)
         enemywaves.updateenemies(p1, manager, gravity, dt / substeps)
 
     # fill the screen with a color to wipe away anything from last frame
@@ -122,6 +125,11 @@ while run:
 
     p1.draw(screen)
     enemywaves.drawenemies(screen)
+
+    uimanager.updateUIElement(screen, [10, 10], str(p1.health))
+
+    for eneme in enemywaves.enemies:
+        uimanager.updateUIElement(screen, [eneme.pos.x * 16, (eneme.pos.y - 3) * 16], str(eneme.health))
 
     # flip() the display to put your work on screen
     pygame.display.flip()
