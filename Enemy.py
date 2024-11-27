@@ -60,10 +60,10 @@ class enemy(playerphysics):
 
         worlddamage = self.updatephysics(dir, grid, gravity, dt)
         self.health -= worlddamage
-        
+
         if self.health <= 0:
             return True
-        
+
         return False
 
     def draw(self, screen):

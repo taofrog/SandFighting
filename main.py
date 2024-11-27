@@ -4,7 +4,7 @@ import math
 import Enemy
 import Player
 from sandManager import *
-
+from waveManager import wavemanager
 
 pygame.init()
 screen = pygame.display.set_mode((1024, 1024))
@@ -14,7 +14,7 @@ run = True
 gravity = pygame.Vector2(0.0, 0.6)
 
 p1 = Player.player(32, 10, 2.5, 2.5, 16, 0.05, 0.01, 50, "blockgun", _deugview=False)
-enemies = [Enemy.enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun")]
+enemywaves = wavemanager(Enemy.enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun"))
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, accel, deccel, jump
 # can also set custom airaccel and airdeccel, as well as toggle debug view
 
@@ -109,9 +109,8 @@ while run:
     # update player. takes directional input, 64x64 grid, and gravity
     substeps = 8
     for _ in range(substeps):
-        p1.update(dir, manager.tiles, gravity, dt / substeps, mousepos, mousedown, manager, enemies)
-        for enemy in enemies:
-            enemy.update(p1, manager.tiles, gravity, dt / substeps, manager)
+        p1.update(dir, manager.tiles, gravity, dt / substeps, mousepos, mousedown, manager, enemywaves.enemies)
+        enemywaves.updateenemies(p1, manager, gravity, dt / substeps)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
@@ -121,8 +120,7 @@ while run:
     manager.updateSurf(0, 0)
 
     p1.draw(screen)
-    for enemy in enemies:
-        enemy.draw(screen)
+    enemywaves.drawenemies(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

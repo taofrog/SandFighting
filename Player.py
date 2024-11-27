@@ -68,6 +68,7 @@ class player(playerphysics):
                 enemedamage += enemy.dealdamage()
 
         self.health -= worlddamage + enemedamage
+        print(self.health)
 
         self.mouse = mousepos
 
