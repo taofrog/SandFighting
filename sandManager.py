@@ -11,6 +11,7 @@ class tile:
         self.colour = colour
         self.liquid = False
         self.gas = False
+        self.temp = False
         self.displacingTiles = [0]
 
 class tileManager:
@@ -37,6 +38,10 @@ class tileManager:
                     currentTile = self.tileTypes[self.tiles[x][y]]
 
                     if y + 1 < self.dimensions[1]:
+                        if currentTile.temp:
+                            self.tiles[x][y] = 0
+                            self.updatedTiles[x][y] = 1
+
                         if currentTile.gravity:
                             if self.tiles[x][y + 1] in currentTile.displacingTiles:
                                 self.tiles[x][y] = self.tiles[x][y + 1]
