@@ -9,7 +9,7 @@ class player(playerphysics):
         super().__init__(x, y, xvel, yvel, xsize, ysize, _speed, _accel, _deccel, _jump, _airaccel, _airdeccel, _deugview)
 
         self.mouse = pygame.Vector2()
-        self.availableguns = ["sandgun", "blockgun", "watergun"]
+        self.availableguns = ["sandgun", "blockgun", "watergun", "grenade"]
         self.gun = weapon(_weapon)
 
     def cycleweapons(self, direction):
@@ -36,7 +36,7 @@ class player(playerphysics):
         if mousedown:
             self.gun.shoot(self.pos, self.size, mousepos)
 
-        self.gun.updatebullets(dt, sandmanager, grid)
+        self.gun.updatebullets(dt, sandmanager, grid, gravity)
 
     def draw(self, screen):
 

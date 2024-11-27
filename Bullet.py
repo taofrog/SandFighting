@@ -1,10 +1,11 @@
 import pygame
 import math
 
-# speed, colour gravity
-bullets = {"sandgun"  : [32, "red"],
-            "blockgun": [64, [80, 80, 80, 255]],
-            "watergun": [32, "blue"]}
+# speed, colour, gravity
+bullets = {"sandgun"  : [32, "red", False],
+            "blockgun": [64, [80, 80, 80, 255], False],
+            "watergun": [32, "blue", False],
+            "grenade" : [60, "darkgreen", True]}
 
 class projectile:
     def __init__(self, _pos, weapon, endpoint):
@@ -27,7 +28,9 @@ class projectile:
 
         return False
 
-    def update(self, dt):
+    def update(self, dt, gravity):
+        if self.weapontype == "grenade":
+            self.vel += gravity
         self.pos += self.vel * dt * 16
 
         distance = self.pos - self.endpoint

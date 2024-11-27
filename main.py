@@ -14,7 +14,7 @@ run = True
 gravity = pygame.Vector2(0.0, 0.6)
 
 p1 = Player.player(32, 10, 2.5, 2.5, 16, 0.05, 0.01, 50, "blockgun", _deugview=False)
-p2 = Enemy.enemy(60, 10, 2.5, 2.5, 16, 0.05, 0.01, 50, "blockgun")
+p2 = Enemy.enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun")
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, accel, deccel, jump
 # can also set custom airaccel and airdeccel, as well as toggle debug view
 

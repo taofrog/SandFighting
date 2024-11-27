@@ -38,7 +38,7 @@ class enemy(playerphysics):
 
         self.updatephysics(dir, grid, gravity, dt)
 
-        self.gun.updatebullets(dt, sandmanager, grid)
+        self.gun.updatebullets(dt, sandmanager, grid, gravity)
 
     def draw(self, screen):
 

@@ -4,10 +4,12 @@ from Bullet import projectile
 
 weaponcolours = {"sandgun" : "red",
                  "blockgun": [80, 80, 80, 255],
-                 "watergun": "blue"}  # pygame colour literal
+                 "watergun": "blue",
+                 "grenade" : "darkgreen"}  # pygame colour literal
 weaponreloadtimes = {"sandgun" : 0.1,
                      "blockgun": 0.1,
-                     "watergun": 0.1} # time between bullets, in seconds
+                     "watergun": 0.1,
+                     "grenade" : 1} # time between bullets, in seconds
 
 class weapon:
     def __init__(self, _type):
@@ -15,22 +17,27 @@ class weapon:
         self.bullets = []
         self.reload = 0
 
-    def updatebullets(self, dt, sandmanager, grid):
+    def updatebullets(self, dt, sandmanager, grid, gravity):
         if self.reload > 0:
             self.reload -= dt
         else:
             self.reload = 0
 
         for bullet in self.bullets:
-            if bullet.update(dt) or bullet.tilecollision(grid):
+            if bullet.update(dt, gravity) or bullet.tilecollision(grid):
                 if bullet.weapontype == "sandgun":
                     sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 1
                 if bullet.weapontype == "blockgun":
                     sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 2
                 if bullet.weapontype == "watergun":
-                    sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 3
-                    sandmanager.tiles[math.floor(bullet.pos[0] / 16) + 1][math.floor(bullet.pos[1] / 16)] = 3
-                    sandmanager.tiles[math.floor(bullet.pos[0] / 16) - 1][math.floor(bullet.pos[1] / 16)] = 3
+                    for i in range(-1, 2):
+                        sandmanager.tiles[math.floor(bullet.pos[0] / 16) + i][math.floor(bullet.pos[1] / 16)] = 3
+                if bullet.weapontype == "grenade":
+                    explosionradius = 5
+                    for x in range(-explosionradius, explosionradius + 1):
+                        for y in range(-explosionradius, explosionradius + 1):
+                            #if sandmanager.tiles(bullet.pos/16)
+                            sandmanager.tiles[math.floor(bullet.pos[0] / 16)+x][math.floor(bullet.pos[1] / 16)+y] = 0
 
                 self.bullets.remove(bullet)
 
