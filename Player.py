@@ -11,6 +11,32 @@ class player(playerphysics):
         self.mouse = pygame.Vector2()
         self.availableguns = ["sandgun", "blockgun", "watergun", "grenade"]
         self.gun = weapon(_weapon)
+        self.surfSheet = pygame.image.load("PinkGuyNoMouth.png")
+        self.frame = 0
+        self.mouthAnimateFrame = 0
+        self.xSize = xsize * 16
+        self.ySize = ysize * 16
+
+        self.scaleDif = self.ySize / 32
+        print(self.scaleDif)
+        self.frames = []
+        for frameI in range(3):
+            subFrame = pygame.rect.Rect([0, 32 * frameI], [32, 32])
+            frame = self.surfSheet.subsurface(subFrame)
+            frame = pygame.transform.scale_by(frame, self.scaleDif)
+            self.frames.append(frame)
+        self.animateFrame = 0
+
+        self.mouthSheet = pygame.image.load("Mouth.png")
+
+        self.mouthFrame = 0
+        self.mouthFrames = []
+        for frameI in [0, 1]:
+            subFrame = pygame.rect.Rect([0, 8 * frameI], [17, 8])
+            frame = self.mouthSheet.subsurface(subFrame)
+            frame = pygame.transform.scale_by(frame, self.scaleDif)
+            self.mouthFrames.append(frame)
+
 
     def cycleweapons(self, direction):
         current = self.gun.weapontype
@@ -84,6 +110,26 @@ class player(playerphysics):
             self.size.x * 16, self.size.y * 16
         )  # translating from world to screen space
 
-        pygame.draw.rect(screen, colour, p)
+        self.frame += 1
+        self.mouthFrame += 1
+        if self.mouthFrame % 10 == 0:
+            self.mouthAnimateFrame += 1
+        if self.mouthAnimateFrame > 1:
+            self.mouthAnimateFrame = 0
+        if self.frame % 10 == 0:
+            self.animateFrame += 1
+        if self.animateFrame > 2:
+            self.animateFrame = 0
+
+
+
+        screen.blit(self.frames[self.animateFrame], p)
+
+        mouthOffset = pygame.Vector2((-8.5 * self.scaleDif) + (self.vel.x / 4), 0)
+
+
+
+        screen.blit(self.mouthFrames[self.mouthAnimateFrame], p.center + mouthOffset)
+
 
         self.gun.draw(screen, self.pos, self.size, self.mouse)
