@@ -11,7 +11,7 @@ class player(playerphysics):
         self.mouse = pygame.Vector2()
         self.availableguns = ["sandgun", "blockgun", "watergun", "grenade"]
         self.gun = weapon(_weapon)
-        self.surfSheet = pygame.image.load("PinkGuyNoMouth.png")
+        self.surfSheet = pygame.image.load("Assets/PinkGuyNoMouth.png")
         self.frame = 0
         self.mouthAnimateFrame = 0
         self.xSize = xsize * 16
@@ -27,7 +27,7 @@ class player(playerphysics):
             self.frames.append(frame)
         self.animateFrame = 0
 
-        self.mouthSheet = pygame.image.load("Mouth.png")
+        self.mouthSheet = pygame.image.load("Assets/Mouth.png")
 
         self.mouthFrame = 0
         self.mouthFrames = []

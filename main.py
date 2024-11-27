@@ -30,7 +30,7 @@ water.gravity = True
 water.sandPhysics = True
 water.liquid = True
 water.gravity = True
-boom = tile(4, [0, 100, 200, 255])
+boom = tile(4, [250, 200, 120, 255])
 boom.temp = True
 
 tileTypes = {

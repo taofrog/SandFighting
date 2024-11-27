@@ -31,13 +31,15 @@ class weapon:
                     sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 2
                 if bullet.weapontype == "watergun":
                     for i in range(-1, 2):
-                        sandmanager.tiles[math.floor(bullet.pos[0] / 16) + i][math.floor(bullet.pos[1] / 16)] = 3
+                        if 0 <= math.floor(bullet.pos[0] / 16) + i <= 63:
+                            sandmanager.tiles[math.floor(bullet.pos[0] / 16) + i][math.floor(bullet.pos[1] / 16)] = 3
                 if bullet.weapontype == "grenade":
                     explosionradius = 5
                     for x in range(-explosionradius, explosionradius + 1):
                         for y in range(-explosionradius, explosionradius + 1):
-                            #if sandmanager.tiles(bullet.pos/16)
-                            sandmanager.tiles[math.floor(bullet.pos[0] / 16)+x][math.floor(bullet.pos[1] / 16)+y] = 0
+                            if 0 <= math.floor(bullet.pos[0] / 16)+x <= 63 \
+                                    and 0 <= math.floor(bullet.pos[1] / 16)+y <= 63:
+                                sandmanager.tiles[math.floor(bullet.pos[0] / 16)+x][math.floor(bullet.pos[1] / 16)+y] = 4
 
                 self.bullets.remove(bullet)
 

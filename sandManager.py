@@ -1,6 +1,7 @@
 import pygame
 import random
 from typing import Dict
+import math
 
 
 class tile:
@@ -24,8 +25,17 @@ class tileManager:
         self.scale = 16
         self.displaySurf = pygame.surface.Surface([dimensions[0] * self.scale, dimensions[0] * self.scale])
         self.showupdates = False
+        self.sandmappng = pygame.image.load("Assets/SandMap.png")
+        self.watermappng = pygame.image.load("Assets/WaterMap.png")
+        self.explosionmappng = pygame.image.load("Assets/ExplosionMap.png")
+        self.blockmappng = pygame.image.load("Assets/BlockMap.png")
+        self.wateroffset = 0
+        self.wateroffsetint = 0
 
     def update(self):
+        self.wateroffset += 0.1
+        self.wateroffsetint = math.floor(self.wateroffset)
+
         for y in range(self.dimensions[1]):
             for x in range(self.dimensions[0]):
                 self.updatedTiles[x][y] = 0
@@ -39,8 +49,11 @@ class tileManager:
 
                     if y + 1 < self.dimensions[1]:
                         if currentTile.temp:
-                            self.tiles[x][y] = 0
-                            self.updatedTiles[x][y] = 1
+                            prob = 0.5
+                            i = random.randint(0, 100) / 100
+                            if i < prob:
+                                self.tiles[x][y] = 0
+                                self.updatedTiles[x][y] = 1
 
                         if currentTile.gravity:
                             if self.tiles[x][y + 1] in currentTile.displacingTiles:
@@ -131,7 +144,16 @@ class tileManager:
     def updateSurf(self, offsetX, offsetY):
         for x in range(self.dimensions[0]):
             for y in range(self.dimensions[1]):
-                colour = self.tileTypes[self.tiles[x][y]].colour
+                if self.tiles[x][y] == 1:
+                    colour = self.sandmappng.get_at((x, y))
+                elif self.tiles[x][y] == 2:
+                    colour = self.blockmappng.get_at((x, y))
+                elif self.tiles[x][y] == 3:
+                    colour = self.watermappng.get_at(((x + self.wateroffsetint) % 64, y))
+                elif self.tiles[x][y] == 4:
+                    colour = self.explosionmappng.get_at((x, y))
+                else:
+                    colour = self.tileTypes[self.tiles[x][y]].colour
                 self.editSurf.set_at((x + offsetX, y + offsetY), colour)
                 if self.showupdates and self.updatedTiles[x][y] != 0:
                     self.editSurf.set_at((x + offsetX, y + offsetY), [255,255,255,100])
