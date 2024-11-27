@@ -30,13 +30,16 @@ water.gravity = True
 water.sandPhysics = True
 water.liquid = True
 water.gravity = True
+boom = tile(4, [0, 100, 200, 255])
+boom.temp = True
 
 tileTypes = {
     -1:solid,
     0: air,
     1: sand,
     2: block,
-    3: water
+    3: water,
+    4: boom
 }
 
 manager = tileManager((64, 64), tileTypes)
