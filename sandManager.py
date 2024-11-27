@@ -1,3 +1,4 @@
+
 import pygame
 import random
 from typing import Dict
@@ -13,7 +14,7 @@ class tile:
         self.liquid = False
         self.gas = False
         self.temp = False
-        self.displacingTiles = [0]
+        self.displacingTiles = [0, 3]
 
 class tileManager:
     def __init__(self, dimensions: tuple, tileTypes: Dict[int, tile]):
@@ -46,7 +47,7 @@ class tileManager:
 
                     if y + 1 < self.dimensions[1]:
                         if currentTile.temp:
-                            prob = 0.2+ (y / 1024)
+                            prob = 0.2 + (y / 1024)
                             i = random.randint(0, 100) / 100
                             if i < prob:
 
@@ -65,6 +66,7 @@ class tileManager:
                                 self.updatedTiles[x][y] = 1
                                 self.tiles[x][y + 1] = currentTile.id
                                 self.updatedTiles[x][y + 1] = 1
+                                print("fall")
 
                             elif currentTile.sandPhysics or currentTile.liquid:
                                 directions = []
@@ -87,57 +89,52 @@ class tileManager:
                                     self.updatedTiles[x + chosenDirection][y + 1] = 1
 
                                 elif currentTile.liquid:
-                                    foundL = False
-                                    foundR = False
-                                    left = 1
-                                    right = 1
-                                    while x - left >= 0 and left != 0:
-                                        if self.tiles[x - left][y + 1] != 3:
-                                            if self.tiles[x - left][y + 1] != 0:
-                                                left = 0
-                                                foundL = False
+                                    left = 0
+                                    right = 0
+                                    l = 1
+                                    r = 1
+                                    while x - l >= 0 and l != 0:
+                                        if self.tiles[x - l][y + 1] != 3:
+                                            if self.tiles[x - l][y + 1] != 0:
                                                 break
                                             else:
-                                                foundL = True
+                                                left = l
                                                 break
-                                        elif self.tiles[x - left][y] != 0:
-                                            left = 0
-                                            foundL = False
+                                        elif self.tiles[x - l][y] != 0:
                                             break
-                                        left += 1
+                                        l += 1
 
-                                    while x + right < self.dimensions[0] and right != 0:
+                                    while x + r < self.dimensions[0] and r != 0:
 
-                                        if self.tiles[x + right][y + 1] != currentTile.id:
-                                            if self.tiles[x + right][y + 1] != 0:
-                                                right = 0
-                                                foundR = False
+                                        if self.tiles[x + r][y + 1] != currentTile.id:
+                                            if self.tiles[x + r][y + 1] != 0:
                                                 break
                                             else:
-                                                foundR = True
+                                                right = r
                                                 break
-                                        elif self.tiles[x + right][y] != 0:
-                                            right = 0
-                                            foundR = False
+                                        elif self.tiles[x + r][y] != 0:
                                             break
-                                        right += 1
+                                        r += 1
 
-                                    if (left > 0 and foundL) or (right > 0 and foundR):
-                                        if left < right and left != 0 and foundL:
+                                    if left > 0 or right > 0:
+                                        if left < right and left != 0:
                                             direction = -left
-                                        elif right < left and right != 0 and foundR:
+                                        elif right < left and right != 0:
                                             direction = right
                                         else:
                                             dlist = [-left, right]
                                             direction = random.choice(dlist)
 
-                                        print(left,right,direction)
+                                        #print(left, right, direction)
 
-                                        self.tiles[x][y] = self.tiles[x + direction][y + 1]
-                                        self.updatedTiles[x][y] = 1
-                                        self.tiles[x + direction][y + 1] = currentTile.id
-                                        print(x + direction, y + 1, " | ", len(self.tiles), len(self.tiles[x]), " | ", len(self.updatedTiles), len(self.updatedTiles[x]))
-                                        self.updatedTiles[x + direction][y + 1] = 1
+                                        if direction != 0:
+                                            self.tiles[x][y] = self.tiles[x + direction][y + 1]
+                                            self.updatedTiles[x][y] = 1
+                                            self.tiles[x + direction][y + 1] = currentTile.id
+                                            print(x + direction, y + 1, " | ", len(self.tiles), len(self.tiles[x]), " | ", len(self.updatedTiles), len(self.updatedTiles[x]))
+                                            self.updatedTiles[x + direction][y + 1] = 1
+
+
 
     def updateSurf(self, offsetX, offsetY):
         self.wateroffset += 0.1
