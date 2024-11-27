@@ -14,8 +14,13 @@ class enemy(playerphysics):
         self.cooldown = 0
 
         self.hitdelay = 0.8
-
         self.damage = 10
+
+        self.health = 100
+
+        self.sanddamage = 1
+        self.stonedamage = 2
+        self.explosiondamage = 5
 
     def dealdamage(self):
         if self.cooldown <= 0:
@@ -51,9 +56,15 @@ class enemy(playerphysics):
         if self.dir.length_squared() > 25:
             dir = self.dir
 
-        self.updatephysics(dir, grid, gravity, dt)
-
         self.gun.updatebullets(dt, sandmanager, grid, gravity)
+
+        worlddamage = self.updatephysics(dir, grid, gravity, dt)
+        self.health -= worlddamage
+        
+        if self.health <= 0:
+            return True
+        
+        return False
 
     def draw(self, screen):
 
@@ -101,6 +112,8 @@ class enemy(playerphysics):
             self.size.x * 16, self.size.y * 16
         )  # translating from world to screen space
 
-        pygame.draw.rect(screen, colour, p)
+
+        if self.health > 0:
+            pygame.draw.rect(screen, colour, p)
 
         self.gun.draw(screen, self.pos, self.size, self.dir)
