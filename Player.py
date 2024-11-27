@@ -133,7 +133,7 @@ class player(playerphysics):
         if self.animateFrame > 2:
             self.animateFrame = 0
 
-        print(self.health)
+        #print(self.health)
         if self.health > 0:
             screen.blit(self.frames[self.animateFrame], p)
 

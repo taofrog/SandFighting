@@ -33,9 +33,6 @@ class tileManager:
         self.wateroffsetint = 0
 
     def update(self):
-        self.wateroffset += 0.1
-        self.wateroffsetint = math.floor(self.wateroffset)
-
         for y in range(self.dimensions[1]):
             for x in range(self.dimensions[0]):
                 self.updatedTiles[x][y] = 0
@@ -82,64 +79,53 @@ class tileManager:
                                     self.tiles[x + chosenDirection][y + 1] = currentTile.id
                                     self.updatedTiles[x + chosenDirection][y + 1] = 1
 
-
                                 elif currentTile.liquid:
-                                    displacements = [-1, 1]
-                                    foundL = False
-                                    foundR = False
-
-                                    while x + displacements[0] >= 0:
-                                        if self.tiles[x + displacements[0]][y] == 0:
-                                            if self.tiles[x + displacements[0]][
-                                                y + 1] in currentTile.displacingTiles and \
-                                                    self.updatedTiles[x + displacements[0]][y + 1] == 0:
-                                                foundL = True
-
+                                    left = 1
+                                    right = 1
+                                    while x - left >= 0 and left != 0:
+                                        if self.tiles[x - left][y + 1] != 3:
+                                            if self.tiles[x - left][y + 1] != 0:
+                                                left = 0
                                                 break
-                                            displacements[0] -= 1
-                                        else:
-                                            break
-
-                                    while x + displacements[1] < self.dimensions[0]:
-                                        if self.tiles[x + displacements[1]][y] == 0:
-                                            if self.tiles[x + displacements[1]][
-                                                y + 1] in currentTile.displacingTiles and \
-                                                    self.updatedTiles[x + displacements[1]][y + 1] == 0:
-                                                foundR = True
+                                            else:
                                                 break
-                                            displacements[1] += 1
-                                        else:
+                                        elif self.tiles[x - left][y] != 0:
+                                            left = 0
                                             break
+                                        left += 1
 
-                                    dir = 0
+                                    while x + right < self.dimensions[0] and right != 0:
+                                        if self.tiles[x + right][y + 1] != 3:
+                                            if self.tiles[x + right][y + 1] != 0:
+                                                right = 0
+                                                break
+                                            else:
+                                                break
+                                        elif self.tiles[x + right][y] != 0:
+                                            right = 0
+                                            break
+                                        right += 1
 
-
-                                    if foundL and foundR:
-
-                                        if abs(displacements[0]) > displacements[1]:
-                                            dir = displacements[0]
-
-                                        elif abs(displacements[1]) > displacements[0]:
-                                            dir = displacements[1]
-
+                                    if left > 0 or right > 0:
+                                        if left < right and left != 0:
+                                            direction = -left
+                                        elif right < left and right != 0:
+                                            direction = right
                                         else:
-                                            dir = displacements[0]
+                                            dlist = [-left, right]
+                                            direction = random.choice(dlist)
 
-                                    elif foundL:
-                                        dir = displacements[0]
+                                        print(left,right,direction)
 
-                                    elif foundR:
-                                        dir = displacements[1]
-
-                                    else:
-                                        break
-
-                                    self.tiles[x][y] = self.tiles[x + dir][y + 1]
-                                    self.tiles[x + dir][y + 1] = currentTile.id
-                                    self.updatedTiles[x][y] = 1
-                                    self.updatedTiles[x + dir][y + 1] = 1
+                                        self.tiles[x][y] = self.tiles[x + direction][y + 1]
+                                        self.updatedTiles[x][y] = 1
+                                        self.tiles[x + direction][y + 1] = currentTile.id
+                                        self.updatedTiles[x + direction][y + 1] = 1
 
     def updateSurf(self, offsetX, offsetY):
+        self.wateroffset += 0.1
+        self.wateroffsetint = math.floor(self.wateroffset)
+
         for x in range(self.dimensions[0]):
             for y in range(self.dimensions[1]):
                 if self.tiles[x][y] == 1:

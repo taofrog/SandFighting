@@ -30,7 +30,7 @@ class weapon:
                 if bullet.weapontype == "blockgun":
                     sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 2
                 if bullet.weapontype == "watergun":
-                    for i in range(-1, 2):
+                    for i in range(0, 1):
                         if 0 <= math.floor(bullet.pos[0] / 16) + i <= 63:
                             sandmanager.tiles[math.floor(bullet.pos[0] / 16) + i][math.floor(bullet.pos[1] / 16)] = 3
                 if bullet.weapontype == "grenade":
