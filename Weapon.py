@@ -1,7 +1,7 @@
 import pygame
 import math
 from Bullet import projectile
-
+pygame.mixer.init()
 weaponcolours = {"sandgun" : "red",
                  "blockgun": [80, 80, 80, 255],
                  "watergun": "blue",
@@ -9,7 +9,16 @@ weaponcolours = {"sandgun" : "red",
 weaponreloadtimes = {"sandgun" : 0.08,
                      "blockgun": 0.12,
                      "watergun": 0.05,
-                     "grenade" : 1} # time between bullets, in seconds
+                     "grenade" : 1} # time between bullets, in seconds\
+
+weaponSoundsOnLand = {"sandgun" : pygame.mixer.Sound("SFX/sandWalk.wav"),
+                     "blockgun": pygame.mixer.Sound("SFX/blockShoot.wav"),
+                     "watergun": pygame.mixer.Sound("SFX/waterShoot.wav"),
+                     "grenade" : pygame.mixer.Sound("SFX/explosion.wav")}
+genericWeaponShoot = pygame.mixer.Sound("SFX/genericShoot.wav")
+genericWeaponShoot.set_volume(0.05)
+weaponSoundsOnLand["blockgun"].set_volume(0.05)
+weaponSoundsOnLand["grenade"].set_volume(0.25)
 
 class weapon:
     def __init__(self, _type):
@@ -34,6 +43,7 @@ class weapon:
 
         for bullet in self.bullets:
             if bullet.update(dt, gravity) or bullet.tilecollision(grid):
+
                 if bullet.weapontype == "sandgun":
                     sandmanager.tiles[math.floor(bullet.pos[0])][math.floor(bullet.pos[1])] = 1
                 if bullet.weapontype == "blockgun":
@@ -44,11 +54,13 @@ class weapon:
                             sandmanager.tiles[math.floor(bullet.pos[0]) + i][math.floor(bullet.pos[1])] = 3
                 if bullet.weapontype == "grenade":
                     explosionradius = 5
+
                     for x in range(-explosionradius, explosionradius + 1):
                         for y in range(-explosionradius, explosionradius + 1):
                             if 0 <= math.floor(bullet.pos[0])+x <= 63 \
                                     and 0 <= math.floor(bullet.pos[1])+y <= 63:
                                 sandmanager.tiles[math.floor(bullet.pos[0])+x][math.floor(bullet.pos[1])+y] = 4
+                weaponSoundsOnLand[bullet.weapontype].play()
 
                 self.bullets.remove(bullet)
 
@@ -62,6 +74,7 @@ class weapon:
             self.bullets.append(projectile(gunpos, self.weapontype, mousepos))
 
             self.reload = weaponreloadtimes[self.weapontype]
+            genericWeaponShoot.play()
 
     def draw(self, screen, scale, offsetx, offsety, pos, size, mousepos):
         mousedir = mousepos - pos

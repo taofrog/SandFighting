@@ -8,6 +8,7 @@ from waveManager import wavemanager
 from UIManager import UIManager
 
 pygame.init()
+pygame.mixer.init()
 screensize = [1920, 1080]
 minscreen = min(screensize[0], screensize[1])
 scale = minscreen/64
@@ -17,10 +18,10 @@ yoffset = (screensize[1] - minscreen) / 2
 screen = pygame.display.set_mode(screensize)
 clock = pygame.time.Clock()
 run = True
-
+endScreen = pygame.transform.scale_by(pygame.image.load("Assets/Screen.png"),scale / 16)
 gravity = pygame.Vector2(0.0, 0.6)
 
-p1 = Player.player(32, 10, 2.5, 2.5, 16, 0.05, 0.01, 70, "blockgun", _deugview=False)
+p1 = Player.player(10, 10, 2.5, 2.5, 16, 0.05, 0.01, 70, "blockgun", _deugview=False)
 enemywaves = wavemanager()
 # xpos, ypos, xvel, yvel, xsize, xsize, speed, accel, deccel, jump
 # can also set custom airaccel and airdeccel, as well as toggle debug view
@@ -60,11 +61,13 @@ for y in range(-1, 65):
             manager.tiles[x][y] = -1
         elif y > 32:
             manager.tiles[x][y] = 1
+        elif 30 < x < 34 and 10 > y:
+            manager.tiles[x][y] = 2
 
 enemywaves.spawnenemy(manager.tiles, p1)
 uimanager = UIManager("Arial", 12)
 titleManager = UIManager("Arial", 15)
-
+dead = False
 while run:
     dt = clock.tick(60)
     dt *= 0.001
@@ -96,6 +99,8 @@ while run:
                 gravity.y -= 0.1
             if event.key == pygame.K_f:
                 gravity.y += 0.1
+            if event.key == pygame.K_ESCAPE:
+                run = False
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == ord('w'):
@@ -109,23 +114,23 @@ while run:
 
         if event.type == pygame.MOUSEWHEEL:
             p1.cycleweapons(event.y)
+    if not dead:
+        if pygame.mouse.get_pressed(3)[0]:
+            mousedown = True
+        if pygame.mouse.get_pressed(3)[2]:
+            mousedown2 = True
 
-    if pygame.mouse.get_pressed(3)[0]:
-        mousedown = True
-    if pygame.mouse.get_pressed(3)[2]:
-        mousedown2 = True
+        manager.update()
+        enemywaves.update(manager.tiles, p1)
 
-    manager.update()
-    enemywaves.update(manager.tiles, p1)
+        # update player. takes directional input, 64x64 grid, and gravity
+        substeps = 8
+        for _ in range(substeps):
+            dead = p1.update(dir, manager.tiles, gravity, dt / substeps, mousepos, mousedown, mousedown2, manager, enemywaves.enemies)
+            enemywaves.updateenemies(p1, manager, gravity, dt / substeps)
 
-    # update player. takes directional input, 64x64 grid, and gravity
-    substeps = 8
-    for _ in range(substeps):
-        dead = p1.update(dir, manager.tiles, gravity, dt / substeps, mousepos, mousedown, mousedown2, manager, enemywaves.enemies)
-        enemywaves.updateenemies(p1, manager, gravity, dt / substeps)
-
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
+        # fill the screen with a color to wipe away anything from last frame
+        screen.fill("black")
     # draw a rect for every solid cell
     if not dead:
 
@@ -133,6 +138,7 @@ while run:
         manager.updateSurf(screensize)
 
         p1.draw(screen, screensize, xoffset, yoffset)
+
         enemywaves.drawenemies(screen, screensize, xoffset, yoffset)
 
         uimanager.updateUIElement(screen, scale, xoffset, yoffset, [1, 1], str(p1.health))
@@ -140,8 +146,10 @@ while run:
         for eneme in enemywaves.enemies:
             uimanager.updateUIElement(screen, scale, xoffset, yoffset, [eneme.pos.x - eneme.size.x / 2, (eneme.pos.y - eneme.size.y / 2 - 1)], str(eneme.health))
     else:
+        screen.blit(endScreen, [xoffset, yoffset])
         titleManager.updateUIElement(screen, scale, xoffset, yoffset, [28, 28], f"You Died! Score: {enemywaves.totalkills}")
         titleManager.updateUIElement(screen, scale, xoffset, yoffset, [30.5, 31.5], f"Wave: {enemywaves.wave}")
+        titleManager.updateUIElement(screen, scale, xoffset, yoffset, [28, 60], f"Press [ESC] to exit")
     # flip() the display to put your work on screen
     pygame.display.flip()
 

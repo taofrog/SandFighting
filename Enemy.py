@@ -3,6 +3,7 @@ import pygame
 import math
 from Playerphysics import playerphysics
 from Weapon import weapon
+pygame.mixer.init()
 
 
 class enemy(playerphysics):
@@ -24,6 +25,8 @@ class enemy(playerphysics):
         self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
         self.frame = 0
         self.spriteSheet = pygame.image.load("Assets/RedBoiiiiii.png")
+        self.hurtSFX = pygame.mixer.Sound("SFX/hitHurt.wav")
+        self.hurtSFX.set_volume(0.3)
 
         self.scaleDif = self.ySize / 32
         self.frames = []
@@ -92,8 +95,10 @@ class enemy(playerphysics):
         bulletstouching = player.gun.checkcollision(selfrect)
         bullets2touching = player.gun2.checkcollision(selfrect)
         playerdamage = len(bulletstouching)
-
-        self.health -= worlddamage + playerdamage
+        totalDamage = worlddamage + playerdamage
+        self.health -= totalDamage
+        if totalDamage > 0:
+            self.hurtSFX.play()
 
         if self.health <= 0:
             return True

@@ -22,7 +22,12 @@ class player(playerphysics):
 
         self.timesincehit = 0
 
+        self.damaged = False
+        self.damagedSound = pygame.mixer.Sound("SFX/playerHurt.wav")
+        self.damagedSound.set_volume(0.3)
+
         self.scaleDif = self.ySize / 32
+        self.damageSheet = pygame.transform.scale_by(pygame.image.load("Assets/damageSprite.png"), self.scaleDif)
         self.frames = []
         for frameI in range(3):
             subFrame = pygame.rect.Rect([0, 32 * frameI], [32, 32])
@@ -42,6 +47,8 @@ class player(playerphysics):
             self.mouthFrames.append(frame)
 
         self.tilesize = 16
+    
+    
 
     def cycleweapons(self, direction):
         current = self.gun.weapontype
@@ -69,7 +76,13 @@ class player(playerphysics):
             if selfrect.colliderect(enemerect):
                 enemedamage += enemy.dealdamage()
 
-        self.health -= worlddamage + enemedamage
+        totalDamage = worlddamage + enemedamage
+        self.health -= totalDamage
+        if totalDamage > 0:
+            self.damaged = True
+            self.damagedTick = 0
+            self.pos.y -= 0.5
+            self.damagedSound.play()
 
         self.mouse = mousepos
 
@@ -80,6 +93,8 @@ class player(playerphysics):
 
         self.gun.updatebullets(dt, sandmanager, grid, gravity)
         self.gun2.updatebullets(dt, sandmanager, grid, gravity)
+
+
 
         if self.health <= 0:
             return True
@@ -145,7 +160,18 @@ class player(playerphysics):
         if self.animateFrame > 2:
             self.animateFrame = 0
 
-        frame = pygame.transform.scale_by(self.frames[self.animateFrame], scale / 16)
+        if not self.damaged:
+            frame = pygame.transform.scale_by(self.frames[self.animateFrame], scale / 16)
+        elif self.damagedTick % 2 == 0:
+            frame = pygame.transform.scale_by(self.damageSheet, scale / 16)
+            self.damagedTick+=1
+        else:
+            frame = pygame.transform.scale_by(self.frames[self.animateFrame], scale / 16)
+            self.damagedTick += 1
+        if self.damaged and self.damagedTick >= 10:
+            self.damaged = False
+            self.damagedTick = 0
+
         mouthframe = pygame.transform.scale_by(self.mouthFrames[self.mouthAnimateFrame], scale / 16)
 
         if self.health > 0:
