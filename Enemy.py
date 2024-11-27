@@ -13,7 +13,7 @@ class enemy(playerphysics):
         self.gun = weapon(_weapon)
         self.dir = pygame.Vector2()
         self.cooldown = 0
-
+        self.ySize = ysize * 16
 
         self.hitdelay = 0.8
 
@@ -22,6 +22,17 @@ class enemy(playerphysics):
         self.triestobreak = 500
         self.boredOfX = 0
         self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
+        self.frame = 0
+        self.spriteSheet = pygame.image.load("Assets/RedBoiiiiii.png")
+
+        self.scaleDif = self.ySize / 32
+        self.frames = []
+        for frameI in range(3):
+            subFrame = pygame.rect.Rect([0, 32 * frameI], [32, 32])
+            frame = self.spriteSheet.subsurface(subFrame)
+            frame = pygame.transform.scale_by(frame, self.scaleDif)
+            self.frames.append(frame)
+        self.animateFrame = 0
 
         self.health = 100
 
@@ -83,6 +94,8 @@ class enemy(playerphysics):
 
         self.health -= worlddamage + playerdamage
 
+
+
         if self.health <= 0:
             return True
 
@@ -134,7 +147,15 @@ class enemy(playerphysics):
             self.size.x * 16, self.size.y * 16
         )  # translating from world to screen space
 
+        self.frame += 1
+
+        if self.frame % 10 == 0:
+            self.animateFrame += 1
+        if self.animateFrame > 2:
+            self.animateFrame = 0
+
+
         if self.health > 0:
-            pygame.draw.rect(screen, colour, p)
+            screen.blit(self.frames[self.animateFrame], p)
 
         self.gun.draw(screen, self.pos, self.size, self.dir)

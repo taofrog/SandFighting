@@ -81,6 +81,9 @@ class player(playerphysics):
         self.gun.updatebullets(dt, sandmanager, grid, gravity)
         self.gun2.updatebullets(dt, sandmanager, grid, gravity)
 
+        if self.health <= 0:
+            return True
+
     def draw(self, screen):
 
         if self.debugview:
@@ -127,12 +130,14 @@ class player(playerphysics):
             self.size.x * 16, self.size.y * 16
         )  # translating from world to screen space
 
-        self.frame += 1
         self.mouthFrame += 1
         if self.mouthFrame % 10 == 0:
             self.mouthAnimateFrame += 1
         if self.mouthAnimateFrame > 1:
             self.mouthAnimateFrame = 0
+
+        self.frame += 1
+
         if self.frame % 10 == 0:
             self.animateFrame += 1
         if self.animateFrame > 2:
