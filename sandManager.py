@@ -30,6 +30,7 @@ class tileManager:
         self.watermappng = pygame.image.load("Assets/WaterMap.png")
         self.explosionmappng = pygame.image.load("Assets/ExplosionMap.png")
         self.blockmappng = pygame.image.load("Assets/BlockMap.png")
+        self.skymappng = pygame.image.load("Assets/Sky.png")
         self.wateroffset = 0
         self.wateroffsetint = 0
 
@@ -149,6 +150,8 @@ class tileManager:
                     colour = self.watermappng.get_at(((x + self.wateroffsetint) % 64, y))
                 elif self.tiles[x][y] == 4:
                     colour = self.explosionmappng.get_at((x, y))
+                elif self.tiles[x][y] == 0:
+                    colour = self.skymappng.get_at(((x + math.floor(self.wateroffsetint / 4)) % 64, y))
                 else:
                     colour = self.tileTypes[self.tiles[x][y]].colour
                 self.editSurf.set_at((x, y), colour)

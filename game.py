@@ -69,7 +69,7 @@ uimanager = UIManager("Arial", 12)
 titleManager = UIManager("Arial", 15)
 dead = False
 music = pygame.mixer.Sound("SFX/SandFighing.wav")
-music.set_volume(0.25)
+music.set_volume(0.75)
 music.play()
 while run:
     dt = clock.tick(60)
