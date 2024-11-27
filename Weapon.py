@@ -20,11 +20,10 @@ class weapon:
     def checkcollision(self, rect:pygame.Rect):
         touching = []
         for bullet in self.bullets:
-            if rect.collidepoint(bullet.pos / 16):
+            if rect.collidepoint(bullet.pos):
                 touching.append(bullet.vel.length())
                 bullet.endpoint = bullet.pos
 
-        print(touching)
         return touching
 
     def updatebullets(self, dt, sandmanager, grid, gravity):
@@ -36,46 +35,46 @@ class weapon:
         for bullet in self.bullets:
             if bullet.update(dt, gravity) or bullet.tilecollision(grid):
                 if bullet.weapontype == "sandgun":
-                    sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 1
+                    sandmanager.tiles[math.floor(bullet.pos[0])][math.floor(bullet.pos[1])] = 1
                 if bullet.weapontype == "blockgun":
-                    sandmanager.tiles[math.floor(bullet.pos[0] / 16)][math.floor(bullet.pos[1] / 16)] = 2
+                    sandmanager.tiles[math.floor(bullet.pos[0])][math.floor(bullet.pos[1])] = 2
                 if bullet.weapontype == "watergun":
                     for i in range(0, 1):
-                        if 0 <= math.floor(bullet.pos[0] / 16) + i <= 63:
-                            sandmanager.tiles[math.floor(bullet.pos[0] / 16) + i][math.floor(bullet.pos[1] / 16)] = 3
+                        if 0 <= math.floor(bullet.pos[0]) + i <= 63:
+                            sandmanager.tiles[math.floor(bullet.pos[0]) + i][math.floor(bullet.pos[1])] = 3
                 if bullet.weapontype == "grenade":
                     explosionradius = 5
                     for x in range(-explosionradius, explosionradius + 1):
                         for y in range(-explosionradius, explosionradius + 1):
-                            if 0 <= math.floor(bullet.pos[0] / 16)+x <= 63 \
-                                    and 0 <= math.floor(bullet.pos[1] / 16)+y <= 63:
-                                sandmanager.tiles[math.floor(bullet.pos[0] / 16)+x][math.floor(bullet.pos[1] / 16)+y] = 4
+                            if 0 <= math.floor(bullet.pos[0])+x <= 63 \
+                                    and 0 <= math.floor(bullet.pos[1])+y <= 63:
+                                sandmanager.tiles[math.floor(bullet.pos[0])+x][math.floor(bullet.pos[1])+y] = 4
 
                 self.bullets.remove(bullet)
 
     def shoot(self, pos, size, mousepos):
         if self.reload == 0:
-            mousedir = mousepos - pos * 16
+            mousedir = mousepos - pos
             mousedir = mousedir.normalize()
 
-            gunpos = pos * 16 - size * 2 + (mousedir.elementwise() * size) * 8
+            gunpos = pos - size / 8 + (mousedir.elementwise() * size) / 2
 
             self.bullets.append(projectile(gunpos, self.weapontype, mousepos))
 
             self.reload = weaponreloadtimes[self.weapontype]
 
-    def draw(self, screen, pos, size, mousepos):
-        mousedir = mousepos - pos * 16
+    def draw(self, screen, scale, offsetx, offsety, pos, size, mousepos):
+        mousedir = mousepos - pos
         mousedir = mousedir.normalize()
 
-        gunpos = pos * 16 - size * 2 + (mousedir.elementwise() * size) * 8
+        gunpos = (pos - size / 8 + (mousedir.elementwise() * size) / 2) * scale
 
         g = pygame.Rect(
-            gunpos.x, gunpos.y,
-            size.x * 4, size.y * 4
+            gunpos.x + offsetx, gunpos.y + offsety,
+            size.x * scale / 4, size.y * scale / 4
         )  # translating from 0world to screen space
 
         pygame.draw.rect(screen, weaponcolours[self.weapontype], g)
 
         for bullet in self.bullets:
-            bullet.draw(screen)
+            bullet.draw(screen, scale, offsetx, offsety)

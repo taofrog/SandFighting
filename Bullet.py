@@ -17,10 +17,10 @@ class projectile:
 
     def tilecollision(self, grid):
         gridpos = self.pos
-        surrounds = [grid[math.floor(gridpos.x / 16) - 1][math.floor(gridpos.y / 16)],
-                     grid[math.floor(gridpos.x / 16) + 1][math.floor(gridpos.y / 16)],
-                     grid[math.floor(gridpos.x / 16)][math.floor(gridpos.y / 16) - 1],
-                     grid[math.floor(gridpos.x / 16)][math.floor(gridpos.y / 16) + 1]]
+        surrounds = [grid[math.floor(gridpos.x) - 1][math.floor(gridpos.y)],
+                     grid[math.floor(gridpos.x) + 1][math.floor(gridpos.y)],
+                     grid[math.floor(gridpos.x)][math.floor(gridpos.y) - 1],
+                     grid[math.floor(gridpos.x)][math.floor(gridpos.y) + 1]]
 
         for square in surrounds:
             if square != 0 and square != 3:
@@ -31,10 +31,10 @@ class projectile:
     def update(self, dt, gravity):
         if self.weapontype == "grenade":
             self.vel += gravity
-        self.pos += self.vel * dt * 16
+        self.pos += self.vel * dt
 
         distance = self.pos - self.endpoint
-        velscreen = self.vel * dt * 16
+        velscreen = self.vel * dt
 
         if distance.length() <= velscreen.length():
             self.pos = self.endpoint
@@ -42,5 +42,5 @@ class projectile:
 
         return False
 
-    def draw(self, screen):
-        pygame.draw.circle(screen, bullets[self.weapontype][1], self.pos, 10)
+    def draw(self, screen, scale, offsetx, offsety):
+        pygame.draw.circle(screen, bullets[self.weapontype][1], (self.pos * scale) + pygame.Vector2(offsetx, offsety), 0.5 * scale)

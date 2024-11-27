@@ -41,6 +41,7 @@ class player(playerphysics):
             frame = pygame.transform.scale_by(frame, self.scaleDif)
             self.mouthFrames.append(frame)
 
+        self.tilesize = 16
 
     def cycleweapons(self, direction):
         current = self.gun.weapontype
@@ -69,7 +70,6 @@ class player(playerphysics):
                 enemedamage += enemy.dealdamage()
 
         self.health -= worlddamage + enemedamage
-        #print(self.health)
 
         self.mouse = mousepos
 
@@ -84,7 +84,9 @@ class player(playerphysics):
         if self.health <= 0:
             return True
 
-    def draw(self, screen):
+    def draw(self, screen, screensize, offsetx, offsety):
+        minscreen = min(screensize[0], screensize[1])
+        scale = minscreen / 64
 
         if self.debugview:
             br = self.pos + self.size / 2
@@ -92,13 +94,13 @@ class player(playerphysics):
 
             for i in range(1, math.floor(br.x + 1) - math.floor(tl.x) - 1):
                 p1 = pygame.Rect(
-                    math.floor(tl.x + i) * 16, math.floor(tl.y) * 16,
-                    16, 16
+                    math.floor(tl.x + i) * scale, math.floor(tl.y) * self.tilesize,
+                    self.tilesize, self.tilesize
                 )  # translating from world to screen space
 
                 p2 = pygame.Rect(
-                    math.floor(tl.x + i) * 16, math.floor(br.y) * 16,
-                    16, 16
+                    math.floor(tl.x + i) * self.tilesize, math.floor(br.y) * self.tilesize,
+                    self.tilesize, self.tilesize
                 )  # translating from world to screen space
 
                 pygame.draw.rect(screen, "green", p1)
@@ -106,13 +108,13 @@ class player(playerphysics):
 
             for i in range(1, math.floor(br.y + 1) - math.floor(tl.y) - 1):
                 p1 = pygame.Rect(
-                    math.floor(tl.x) * 16, math.floor(tl.y + i) * 16,
-                    16, 16
+                    math.floor(tl.x) * self.tilesize, math.floor(tl.y + i) * self.tilesize,
+                    self.tilesize, self.tilesize
                 )  # translating from world to screen space
 
                 p2 = pygame.Rect(
-                    math.floor(br.x) * 16, math.floor(tl.y + i) * 16,
-                    16, 16
+                    math.floor(br.x) * self.tilesize, math.floor(tl.y + i) * self.tilesize,
+                    self.tilesize, self.tilesize
                 )  # translating from world to screen space
 
                 pygame.draw.rect(screen, "green", p1)
@@ -126,8 +128,8 @@ class player(playerphysics):
             colour = "green"
 
         p = pygame.Rect(
-            self.pos.x * 16 - self.size.x * 8, self.pos.y * 16 - self.size.y * 8,
-            self.size.x * 16, self.size.y * 16
+            self.pos.x * scale - self.size.x * scale / 2 + offsetx, self.pos.y * scale - self.size.y * scale / 2 + offsety,
+            self.size.x * scale, self.size.y * scale
         )  # translating from world to screen space
 
         self.mouthFrame += 1
@@ -143,13 +145,15 @@ class player(playerphysics):
         if self.animateFrame > 2:
             self.animateFrame = 0
 
-        #print(self.health)
+        frame = pygame.transform.scale_by(self.frames[self.animateFrame], scale / 16)
+        mouthframe = pygame.transform.scale_by(self.mouthFrames[self.mouthAnimateFrame], scale / 16)
+
         if self.health > 0:
-            screen.blit(self.frames[self.animateFrame], p)
+            screen.blit(frame, p)
 
-        mouthOffset = pygame.Vector2((-8.5 * self.scaleDif) + (self.vel.x / 4), 0)
+        mouthOffset = pygame.Vector2((-8 * self.size.x * scale / 32) + (self.vel.x * scale / 60), 0)
 
-        screen.blit(self.mouthFrames[self.mouthAnimateFrame], p.center + mouthOffset)
+        screen.blit(mouthframe, p.center + mouthOffset)
 
-        self.gun2.draw(screen, self.pos, self.size, self.mouse)
-        self.gun.draw(screen, self.pos, self.size, self.mouse)
+        self.gun2.draw(screen, scale, offsetx, offsety, self.pos, self.size, self.mouse)
+        self.gun.draw(screen, scale, offsetx, offsety, self.pos, self.size, self.mouse)

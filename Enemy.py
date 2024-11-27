@@ -79,7 +79,7 @@ class enemy(playerphysics):
         if self.boredOfX >= self.triestobreak:
             facing = math.copysign(1, dir.x) * 2
 
-            sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 3
+            sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 0
             #sandmanager.tiles[tilePos[0]][3] = 2
 
         self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
@@ -90,18 +90,19 @@ class enemy(playerphysics):
 
         worlddamage = self.updatephysics(dir, grid, gravity, dt)
         bulletstouching = player.gun.checkcollision(selfrect)
+        bullets2touching = player.gun2.checkcollision(selfrect)
         playerdamage = len(bulletstouching)
 
         self.health -= worlddamage + playerdamage
-
-
 
         if self.health <= 0:
             return True
 
         return False
 
-    def draw(self, screen):
+    def draw(self, screen, screensize, offsetx, offsety):
+        minscreen = min(screensize[0], screensize[1])
+        scale = minscreen / 64
 
         if self.debugview:
             br = self.pos + self.size / 2
@@ -143,8 +144,8 @@ class enemy(playerphysics):
             colour = "darkred"
 
         p = pygame.Rect(
-            self.pos.x * 16 - self.size.x * 8, self.pos.y * 16 - self.size.y * 8,
-            self.size.x * 16, self.size.y * 16
+            self.pos.x * scale - self.size.x * scale / 2 + offsetx, self.pos.y * scale - self.size.y * scale / 2 + offsety,
+            self.size.x * scale, self.size.y * scale
         )  # translating from world to screen space
 
         self.frame += 1
@@ -154,8 +155,7 @@ class enemy(playerphysics):
         if self.animateFrame > 2:
             self.animateFrame = 0
 
+        frame = pygame.transform.scale_by(self.frames[self.animateFrame], scale / 16)
 
         if self.health > 0:
-            screen.blit(self.frames[self.animateFrame], p)
-
-        self.gun.draw(screen, self.pos, self.size, self.dir)
+            screen.blit(frame, p)

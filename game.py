@@ -8,7 +8,13 @@ from waveManager import wavemanager
 from UIManager import UIManager
 
 pygame.init()
-screen = pygame.display.set_mode((1024, 1024))
+screensize = [1920, 1080]
+minscreen = min(screensize[0], screensize[1])
+scale = minscreen/64
+print(scale)
+xoffset = (screensize[0] - minscreen) / 2
+yoffset = (screensize[1] - minscreen) / 2
+screen = pygame.display.set_mode(screensize)
 clock = pygame.time.Clock()
 run = True
 
@@ -20,7 +26,7 @@ enemywaves = wavemanager()
 # can also set custom airaccel and airdeccel, as well as toggle debug view
 
 solid = tile(-1, [255, 255, 255, 255])
-air = tile(0, [0, 0, 0, 0])
+air = tile(0, [130, 140, 206, 255])
 air.displacingTiles = []
 sand = tile(1, [255, 0, 0, 255])
 sand.gravity = True
@@ -56,14 +62,15 @@ for y in range(-1, 65):
             manager.tiles[x][y] = 1
 
 enemywaves.spawnenemy(manager.tiles, p1)
-uimanager = UIManager(pygame.font.SysFont("Arial", 15))
-titleManager = UIManager(pygame.font.SysFont("Arial", 50))
+uimanager = UIManager("Arial", 12)
+titleManager = UIManager("Arial", 15)
 
 while run:
     dt = clock.tick(60)
     dt *= 0.001
 
-    mousepos = pygame.mouse.get_pos()
+    mousep = pygame.mouse.get_pos()
+    mousepos = [(mousep[0] - xoffset) / scale, (mousep[1] - yoffset) / scale]
     mousedown = False
     mousedown2 = False
 
@@ -122,19 +129,19 @@ while run:
     # draw a rect for every solid cell
     if not dead:
 
-        screen.blit(manager.displaySurf, [0, 0])
-        manager.updateSurf(0, 0)
+        screen.blit(manager.displaySurf, [xoffset, yoffset])
+        manager.updateSurf(screensize)
 
-        p1.draw(screen)
-        enemywaves.drawenemies(screen)
+        p1.draw(screen, screensize, xoffset, yoffset)
+        enemywaves.drawenemies(screen, screensize, xoffset, yoffset)
 
-        uimanager.updateUIElement(screen, [10, 10], str(p1.health))
+        uimanager.updateUIElement(screen, scale, xoffset, yoffset, [1, 1], str(p1.health))
 
         for eneme in enemywaves.enemies:
-            uimanager.updateUIElement(screen, [eneme.pos.x * 16, (eneme.pos.y - 3) * 16], str(eneme.health))
+            uimanager.updateUIElement(screen, scale, xoffset, yoffset, [eneme.pos.x - eneme.size.x / 2, (eneme.pos.y - eneme.size.y / 2 - 1)], str(eneme.health))
     else:
-        titleManager.updateUIElement(screen, [400, 400], f"You Died! Score: {enemywaves.totalkills}")
-        titleManager.updateUIElement(screen, [400, 450], f"Wave: {enemywaves.wave}")
+        titleManager.updateUIElement(screen, scale, xoffset, yoffset, [28, 28], f"You Died! Score: {enemywaves.totalkills}")
+        titleManager.updateUIElement(screen, scale, xoffset, yoffset, [30.5, 31.5], f"Wave: {enemywaves.wave}")
     # flip() the display to put your work on screen
     pygame.display.flip()
 

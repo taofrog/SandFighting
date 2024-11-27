@@ -132,9 +132,12 @@ class tileManager:
 
 
 
-    def updateSurf(self, offsetX, offsetY):
+    def updateSurf(self, screensize):
         self.wateroffset += 0.1
         self.wateroffsetint = math.floor(self.wateroffset)
+
+        minscreen = min(screensize[0], screensize[1])
+        scale = minscreen/64
 
         for x in range(self.dimensions[0]):
             for y in range(self.dimensions[1]):
@@ -148,8 +151,8 @@ class tileManager:
                     colour = self.explosionmappng.get_at((x, y))
                 else:
                     colour = self.tileTypes[self.tiles[x][y]].colour
-                self.editSurf.set_at((x + offsetX, y + offsetY), colour)
+                self.editSurf.set_at((x, y), colour)
                 if self.showupdates and self.updatedTiles[x][y] != 0:
-                    self.editSurf.set_at((x + offsetX, y + offsetY), [255,255,255,100])
+                    self.editSurf.set_at((x, y), [255,255,255,100])
 
-        self.displaySurf = pygame.transform.scale_by(self.editSurf, self.scale)
+        self.displaySurf = pygame.transform.scale_by(self.editSurf, scale)
