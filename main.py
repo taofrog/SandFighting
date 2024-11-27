@@ -20,6 +20,7 @@ enemies = [Enemy.enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun")]
 
 solid = tile(-1, [255, 255, 255, 255])
 air = tile(0, [0, 0, 0, 0])
+air.displacingTiles = []
 sand = tile(1, [255, 0, 0, 255])
 sand.gravity = True
 sand.sandPhysics = True
@@ -30,6 +31,7 @@ water.gravity = True
 water.sandPhysics = True
 water.liquid = True
 water.gravity = True
+water.displacingTiles = [0]
 boom = tile(4, [250, 200, 120, 255])
 boom.temp = True
 

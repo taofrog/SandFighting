@@ -66,7 +66,6 @@ class tileManager:
                                 self.updatedTiles[x][y] = 1
                                 self.tiles[x][y + 1] = currentTile.id
                                 self.updatedTiles[x][y + 1] = 1
-                                print("fall")
 
                             elif currentTile.sandPhysics or currentTile.liquid:
                                 directions = []
@@ -125,13 +124,10 @@ class tileManager:
                                             dlist = [-left, right]
                                             direction = random.choice(dlist)
 
-                                        #print(left, right, direction)
-
                                         if direction != 0:
                                             self.tiles[x][y] = self.tiles[x + direction][y + 1]
                                             self.updatedTiles[x][y] = 1
                                             self.tiles[x + direction][y + 1] = currentTile.id
-                                            print(x + direction, y + 1, " | ", len(self.tiles), len(self.tiles[x]), " | ", len(self.updatedTiles), len(self.updatedTiles[x]))
                                             self.updatedTiles[x + direction][y + 1] = 1
 
 

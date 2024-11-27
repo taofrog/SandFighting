@@ -30,6 +30,10 @@ class playerphysics:
         self.wet = 1
         self.wetfac = 0.2
 
+        self.sanddamage = 1
+        self.stonedamage = 2
+        self.explosiondamage = 5
+
     def axistilecollisions(self, grid, axis, gravity):
         overlap = 0  # initialising empty variable
 
@@ -136,11 +140,11 @@ class playerphysics:
         elif grid[gridpos[0]][gridpos[1]] != 0:
             self.colliding = True
             if grid[gridpos[0]][gridpos[1]] == 1:
-                c = 1
+                c = self.sanddamage
             if grid[gridpos[0]][gridpos[1]] == 2:
-                c = 2
+                c = self.stonedamage
             if grid[gridpos[0]][gridpos[1]] == 4:
-                c = 10
+                c = self.explosiondamage
             #return
         else:
             self.colliding = False
