@@ -17,8 +17,11 @@ class player(playerphysics):
         self.xSize = xsize * 16
         self.ySize = ysize * 16
 
+        self.health = 100
+
+        self.timesincehit = 0
+
         self.scaleDif = self.ySize / 32
-        print(self.scaleDif)
         self.frames = []
         for frameI in range(3):
             subFrame = pygame.rect.Rect([0, 32 * frameI], [32, 32])
@@ -54,8 +57,17 @@ class player(playerphysics):
 
         self.gun.weapontype = self.availableguns[i]
 
-    def update(self, movement: pygame.Vector2, grid, gravity, dt, mousepos, mousedown, sandmanager):
-        self.updatephysics(movement, grid, gravity, dt)
+    def update(self, movement: pygame.Vector2, grid, gravity, dt, mousepos, mousedown, sandmanager, enemies):
+        worlddamage = self.updatephysics(movement, grid, gravity, dt)
+        enemedamage = 0
+
+        selfrect = pygame.Rect(self.pos - (self.size / 2), self.size)
+        for enemy in enemies:
+            enemerect = pygame.Rect(enemy.pos - (enemy.size / 2), enemy.size)
+            if selfrect.colliderect(enemerect):
+                enemedamage += enemy.dealdamage()
+
+        self.health -= worlddamage + enemedamage
 
         self.mouse = mousepos
 
@@ -121,9 +133,9 @@ class player(playerphysics):
         if self.animateFrame > 2:
             self.animateFrame = 0
 
-
-
-        screen.blit(self.frames[self.animateFrame], p)
+        print(self.health)
+        if self.health > 0:
+            screen.blit(self.frames[self.animateFrame], p)
 
         mouthOffset = pygame.Vector2((-8.5 * self.scaleDif) + (self.vel.x / 4), 0)
 

@@ -11,6 +11,17 @@ class enemy(playerphysics):
         self.availableguns = ["sandgun", "blockgun", "watergun"]
         self.gun = weapon(_weapon)
         self.dir = pygame.Vector2()
+        self.cooldown = 0
+
+        self.hitdelay = 0.8
+
+        self.damage = 10
+
+    def dealdamage(self):
+        if self.cooldown <= 0:
+            self.cooldown = self.hitdelay
+            return self.damage
+        return 0
 
     def cycleweapons(self, direction):
         current = self.gun.weapontype
@@ -29,6 +40,10 @@ class enemy(playerphysics):
         self.gun.weapontype = self.availableguns[i]
 
     def update(self, player, grid, gravity, dt, sandmanager):
+        if self.cooldown <= 0:
+            self.cooldown = 0
+        else:
+            self.cooldown -= dt
         self.move = pygame.Vector2()
         dir = pygame.Vector2()
 

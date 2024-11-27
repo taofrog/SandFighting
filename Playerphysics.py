@@ -127,12 +127,20 @@ class playerphysics:
 
         # check if center is inside a block i think it will squish here. need to look out for bugs
 
+        c = 0
+
         if grid[gridpos[0]][gridpos[1]] == 3:
             self.wet = self.wetfac
             self.colliding = False
 
         elif grid[gridpos[0]][gridpos[1]] != 0:
             self.colliding = True
+            if grid[gridpos[0]][gridpos[1]] == 1:
+                c = 1
+            if grid[gridpos[0]][gridpos[1]] == 2:
+                c = 2
+            if grid[gridpos[0]][gridpos[1]] == 4:
+                c = 10
             #return
         else:
             self.colliding = False
@@ -144,7 +152,7 @@ class playerphysics:
             self.pos.x += self.vel.x * dt
             overlap.x, corner = self.axistilecollisions(grid, 0, gravity)
 
-            if corner == False:
+            if corner == False and c == 0:
                 self.pos.x -= overlap.x
             else:
                 self.pos.y -= gravity.y / abs(gravity.y)
@@ -157,7 +165,7 @@ class playerphysics:
             self.pos.y += self.vel.y * dt
             overlap.y, corner = self.axistilecollisions(grid, 1, gravity)
 
-            if corner == False:
+            if corner == False and c == 0:
                 self.pos.y -= overlap.y
             else:
                 self.pos.x -= gravity.x / abs(gravity.x)
@@ -177,7 +185,7 @@ class playerphysics:
 
             corner = False
 
-        if corner == False:
+        if corner == False and c == 0:
             if overlap.x != 0:
                 self.vel.x = 0
             if overlap.y != 0:
@@ -187,6 +195,8 @@ class playerphysics:
             self.grounded = True
         else:
             self.grounded = False
+
+        return c
 
     def updatephysics(self, movement, grid, grav, dt):
         # MOVEMENT
@@ -250,4 +260,4 @@ class playerphysics:
         self.vel += gravity  # idk where to put this. shouldnt change much though
 
         # COLLISIONS - includes position updates
-        self.tilecollisions(grid, gravity, dt)  # check for collisions with the grid.
+        return self.tilecollisions(grid, gravity, dt)  # check for collisions with the grid.

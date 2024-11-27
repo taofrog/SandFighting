@@ -101,8 +101,6 @@ class tileManager:
                                             break
 
                                     while x + displacements[1] < self.dimensions[0]:
-                                        #print(x + displacements[1])
-
                                         if self.tiles[x + displacements[1]][y] == 0:
                                             if self.tiles[x + displacements[1]][
                                                 y + 1] in currentTile.displacingTiles and \
