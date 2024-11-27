@@ -24,7 +24,6 @@ class weapon:
                 touching.append(bullet.vel.length())
                 bullet.endpoint = bullet.pos
 
-        print(touching)
         return touching
 
     def updatebullets(self, dt, sandmanager, grid, gravity):

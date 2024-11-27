@@ -6,10 +6,13 @@ from Enemy import enemy
 waveamounts = {1: 1,
                2: 2,
                3: 5,
-               4: 10,
-               5: 20,
-               6: 50,
-               7: 75,}
+               4: 7,
+               5: 10,
+               6: 15,
+               7: 20,
+               8: 50,
+               9: 75,
+               10:100}
 
 
 class wavemanager:
@@ -20,9 +23,9 @@ class wavemanager:
         self.totalkills = 0
 
     def spawnenemy(self, grid, player):
-        print("boo")
         x = random.randint(1, 62)
-        self.enemies.append(enemy(60, 10, 2.2, 2.2, 14, 0.03, 0.008, 40, "blockgun"))
+
+        self.enemies.append(enemy(60, 10, 2.2, 2.2, 100/(self.wave + 6), 0.03, 0.008, 40, "blockgun"))
 
     def update(self, grid, player):
         if self.enemieskilled >= waveamounts[self.wave]:

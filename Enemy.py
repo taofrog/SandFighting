@@ -79,7 +79,7 @@ class enemy(playerphysics):
         if self.boredOfX >= self.triestobreak:
             facing = math.copysign(1, dir.x) * 2
 
-            sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 3
+            sandmanager.tiles[int(tilePos[0] + facing)][tilePos[1]] = 0
             #sandmanager.tiles[tilePos[0]][3] = 2
 
         self.lastCoords = pygame.Vector2(self.pos.x, self.pos.y)
@@ -90,6 +90,7 @@ class enemy(playerphysics):
 
         worlddamage = self.updatephysics(dir, grid, gravity, dt)
         bulletstouching = player.gun.checkcollision(selfrect)
+        bullets2touching = player.gun2.checkcollision(selfrect)
         playerdamage = len(bulletstouching)
 
         self.health -= worlddamage + playerdamage
